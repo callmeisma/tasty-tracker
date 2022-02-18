@@ -1,0 +1,23 @@
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+#root,
+.App,
+.container-fluid,
+.row {
+  height: inherit;
+}
+
+html {
+  -webkit-locale: "en";
+  display: block;
+}
