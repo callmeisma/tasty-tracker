@@ -6,6 +6,7 @@ const UploadTransactions = () => {
   const [accounts, setAccounts] = useState([]);
   const [csv, setCsv] = useState("");
   const [transactions, setTransactions] = useState([]);
+  const [added, setAdded] = useState("")
 
   const csvHandler = (input) => {
     if (input.target.files && input.target.files[0]) {
@@ -15,30 +16,6 @@ const UploadTransactions = () => {
         setCsv(e.target.result);
       };
     }
-  };
-
-  const csvJSON = (csv) => {
-    var lines = csv.split("\n");
-    var result = [];
-    var headers = lines[0].replace("#", "number").split(",");
-
-    for (var i = 1; i < lines.length; i++) {
-      var obj = {};
-
-      var fixline = rmvComma(lines[i]);
-
-      // Get transaction values in an array
-      var currentline = fixline.split(",");
-
-      // Create object for each
-      for (var h = 0; h < headers.length; h++) {
-        obj[headers[h].toLowerCase().replace(/\s/g, "")] = currentline[h];
-      }
-
-      result.push(obj);
-    }
-
-    return setTransactions(result);
   };
 
   const rmvComma = (line) => {
@@ -60,45 +37,67 @@ const UploadTransactions = () => {
     return result;
   };
 
-  const onSubmit = (e) => {
-    e.preventDefault();
+  const csvJSON = (csv) => {
+    var lines = csv.split("\n");
+    var result = [];
+    var headers = lines[0].replace("#", "number").split(",");
 
-    csvJSON(csv);
+    for (var i = 1; i < lines.length; i++) {
+      var obj = {};
 
-    for (let i = 0; i < transactions.length - 1; i++) {
-      console.log(transactions[i]);
-      let transaction = {
-        account: account,
-        date: transactions[i].date,
-        type: transactions[i].type,
-        action: transactions[i].action,
-        symbol: transactions[i].symbol,
-        instrument: transactions[i].instrumenttype,
-        description: transactions[i].description,
-        value: transactions[i].value,
-        quantity: transactions[i].quantity,
-        avgprice: transactions[i].averageprice,
-        commissions: transactions[i].commissions,
-        fees: transactions[i].fees,
-        multiplier: transactions[i].multiplier,
-        rootsymbol: transactions[i].rootsymbol,
-        underlyingsymbol: transactions[i].underlyingsymbol,
-        expiration: transactions[i].expirationdate,
-        strike: transactions[i].strikeprice,
-        callput: transactions[i].callorput,
-        order: transactions[i].ordernumber,
-      };
 
-      axios
-        .post("http://localhost:5000/transactions/add", transaction)
-        .then((res) => console.log(res.data));
+      var fixline = rmvComma(lines[i]).replace("--", "");
+
+      // Get transaction values in an array
+      var currentline = fixline.split(",");
+
+      // Create object for each
+      for (var h = 0; h < headers.length; h++) {
+        obj[headers[h].toLowerCase().replace(/\s/g, "")] = currentline[h];
+      }
+
+      result.push(obj);
     }
 
-    // window.location = "/transactions";
+    return setTransactions(result);
+  };
+
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    csvJSON(csv);
+
+    for (let i = 0; i < transactions.length; i++) {
+      let transaction = {
+        account: account,
+        action: transactions[i].action || "",
+        avgprice: transactions[i].averageprice || "",
+        callput: transactions[i].callorput || "",
+        commissions: transactions[i].commissions || "",
+        date: transactions[i].date,
+        description: transactions[i].description,
+        expiration: transactions[i].expirationdate || transactions[i].date,
+        fees: transactions[i].fees,
+        instrument: transactions[i].instrumenttype || "",
+        multiplier: transactions[i].multiplier || "",
+        order: transactions[i].ordernumber || "",
+        quantity: transactions[i].quantity,
+        rootsymbol: transactions[i].rootsymbol || "", 
+        strikeprice: transactions[i].strikeprice || "",
+        symbol: transactions[i].symbol || "",
+        type: transactions[i].type,
+        underlyingsymbol: transactions[i].underlyingsymbol || "",
+        value: transactions[i].value,
+      };
+      axios
+        .post("http://localhost:4000/transactions/add", transaction)
+        .then((res) => console.log(res.data), 
+        setAdded("Transactions added"))
+    }
   };
 
   useEffect(() => {
-    axios.get("http://localhost:5000/accounts/").then((response) => {
+    axios.get("http://localhost:4000/accounts/").then((response) => {
       if (response.data.length > 0) {
         setAccounts(response.data.map((accounts) => accounts.account));
       }
@@ -108,7 +107,7 @@ const UploadTransactions = () => {
   return (
     <div>
       <h3>Upload Transactions</h3>
-      <form className="m-3 w-75" onSubmit={(e) => onSubmit(e)}>
+      <form className="m-3 w-75" id="csv-form" onSubmit={(e) => onSubmit(e)}>
         <div className="input-group mb-3">
           <label className="input-group-text" htmlFor="inputAccount">
             Account
@@ -141,11 +140,12 @@ const UploadTransactions = () => {
           />
         </div>
         <div className="mb-3">
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn btn-primary" form="csv-form" onClick={(e) => onSubmit(e)}>
             Submit
           </button>
         </div>
       </form>
+      <p>{added}</p>
     </div>
   );
 };

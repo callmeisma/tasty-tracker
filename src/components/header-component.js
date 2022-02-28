@@ -1,9 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
-export default class Navbar extends Component {
-  render() {
+const Header = (props) => {
     return (
       <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-2 shadow">
         <Link to="/" className="navbar-brand col-md-3 col-lg-2 me-0 px-3">
@@ -32,4 +31,4 @@ export default class Navbar extends Component {
       </header>
     );
   }
-}
+export default Header

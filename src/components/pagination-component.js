@@ -9,7 +9,7 @@ const Pagination = () => {
             <a
               className="page-link"
               href="#"
-              tabindex="-1"
+              tabIndex="-1"
               aria-disabled="true"
             >
               Previous

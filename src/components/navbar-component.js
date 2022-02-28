@@ -1,9 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { Component } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
-export default class Navbar extends Component {
-  render() {
+const Navbar = (props) => {
     return (
       <nav
         id="sidebarMenu"
@@ -18,6 +17,12 @@ export default class Navbar extends Component {
               <Link className="nav-link active" aria-current="page" to="/">
                 <i className="bi bi-house p-2"></i>
                 Dashboard
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/trades">
+                <i className="bi bi-boxes p-2"></i>
+                Trades
               </Link>
             </li>
             <li className="nav-item">
@@ -55,15 +60,9 @@ export default class Navbar extends Component {
                 Account
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/option-transform">
-                <i className="bi bi-plus-circle p-2"></i>
-                Opt Trans
-              </Link>
-            </li>
           </ul>
         </div>
       </nav>
     );
   }
-}
+export default Navbar

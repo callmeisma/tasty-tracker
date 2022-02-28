@@ -14,7 +14,7 @@ const CreateAccount = () => {
     };
 
     axios
-      .post("http://localhost:5000/accounts/add", account)
+      .post("http://localhost:4000/accounts/add", account)
       .then((res) => console.log(res.data));
 
     window.location = "/accounts";

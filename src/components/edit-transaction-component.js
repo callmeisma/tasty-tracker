@@ -1,237 +1,95 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import moment from "moment";
 
-export default class CreateExercise extends Component {
-  constructor(props) {
-    super(props);
+const EditTransaction = (props) => {
+  let today = moment().format("YYYY-MM-DD");
+  const [accounts, setAccounts] = useState([]);
+  const [account,setAccount] = useState();
+  const [date,setDate] = useState(today);
+  const [type,setType] = useState();
+  const [action,setAction] = useState();
+  const [symbol,setSymbol] = useState();
+  const [instrument,setInstrument] = useState();
+  const [description,setDescription] = useState();
+  const [value,setValue] = useState();
+  const [quantity,setQuantity] = useState();
+  const [avgprice,setAvgprice] = useState();
+  const [commissions,setCommissions] = useState();
+  const [fees,setFees] = useState();
+  const [multiplier,setMultiplier] = useState();
+  const [rootsymbol,setRootsymbol] = useState();
+  const [underlyingsymbol,setUnderlyingsymbol] = useState();
+  const [expiration,setExpiration] = useState(today);
+  const [strikeprice,setStrikeprice] = useState();
+  const [callput,setCallput] = useState();
+  const [order, setOrder] = useState();
 
-    this.onChangeAccount = this.onChangeAccount.bind(this);
-    this.onChangeDate = this.onChangeDate.bind(this);
-    this.onChangeType = this.onChangeType.bind(this);
-    this.onChangeAction = this.onChangeAction.bind(this);
-    this.onChangeSymbol = this.onChangeSymbol.bind(this);
-    this.onChangeInstrument = this.onChangeInstrument.bind(this);
-    this.onChangeDescription = this.onChangeDescription.bind(this);
-    this.onChangeValue = this.onChangeValue.bind(this);
-    this.onChangeQuantity = this.onChangeQuantity.bind(this);
-    this.onChangeAvgPrice = this.onChangeAvgPrice.bind(this);
-    this.onChangeCommissions = this.onChangeCommissions.bind(this);
-    this.onChangeFees = this.onChangeFees.bind(this);
-    this.onChangeMultiplier = this.onChangeMultiplier.bind(this);
-    this.onChangeRootSymbol = this.onChangeRootSymbol.bind(this);
-    this.onChangeUnderlyingSymbol = this.onChangeUnderlyingSymbol.bind(this);
-    this.onChangeExpiration = this.onChangeExpiration.bind(this);
-    this.onChangeStrike = this.onChangeStrike.bind(this);
-    this.onChangeCallPut = this.onChangeCallPut.bind(this);
-    this.onChangeOrder = this.onChangeOrder.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-
-    this.state = {
-      accounts: [],
-      date: new Date(),
-      type: "Trade",
-      action: "",
-      symbol: "",
-      instrument: "",
-      description: "",
-      value: "",
-      quantity: 0,
-      avgprice: 0,
-      commissions: 0,
-      fees: 0,
-      multiplier: 0,
-      rootsymbol: "",
-      underlyingsymbol: "",
-      expiration: new Date(),
-      strike: 0,
-      callput: "Put",
-      order: 0,
-    };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     axios
-      .get("http://localhost:5000/transactions/" + this.props.match.params.id)
-      .then((response) => {
-        this.setState({
-          account: response.data.account,
-          date: new Date(response.data.date),
-          type: response.data.type,
-          action: response.data.action,
-          symbol: response.data.symbol,
-          instrument: response.data.instrument,
-          description: response.data.description,
-          value: response.data.value,
-          quantity: response.data.quantity,
-          avgprice: response.data.avgprice,
-          commissions: response.data.commissions,
-          fees: response.data.fees,
-          multiplier: response.data.multiplier,
-          rootsymbol: response.data.rootsymbol,
-          underlyingsymbol: response.data.underlyingsymbol,
-          expiration: new Date(response.data.expiration),
-          strike: response.data.strike,
-          callput: response.data.callput,
-          order: response.data.order,
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
+      .get("http://localhost:4000/transactions/" + props.match.params.id)
+      .then((res) => {
+        console.log(res.data)
+        setAccount(res.data.account)
+        setDate(res.data.date)
+        setType(res.data.type)
+        setAction(res.data.action)
+        setSymbol(res.data.symbol)
+        setInstrument(res.data.instrument)
+        setDescription(res.data.description)
+        setValue(res.data.value)
+        setQuantity(res.data.quantity)
+        setAvgprice(res.data.avgprice)
+        setCommissions(res.data.commissions)
+        setFees(res.data.fees)
+        setMultiplier(res.data.multiplier)
+        setRootsymbol(res.data.rootsymbol)
+        setUnderlyingsymbol(res.data.underlyingsymbol)
+        setExpiration(res.data.expiration)
+        setStrikeprice(res.data.strikeprice)
+        setCallput(res.data.callput)
+        setOrder(res.data.order)
       });
 
-    axios.get("http://localhost:5000/accounts/").then((response) => {
-      if (response.data.length > 0) {
-        this.setState({
-          accounts: response.data.map((accounts) => accounts.account),
-        });
-      }
-    });
-  }
+      axios
+      .get("http://localhost:4000/accounts/")
+      .then((response) => {
+        setAccounts(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
-  onChangeAccount(e) {
-    this.setState({
-      account: e.target.value,
-    });
-  }
-
-  onChangeDate(date) {
-    this.setState({
-      date: date,
-    });
-  }
-
-  onChangeType(e) {
-    this.setState({
-      type: e.target.value,
-    });
-  }
-
-  onChangeAction(e) {
-    this.setState({
-      action: e.target.value,
-    });
-  }
-
-  onChangeSymbol(e) {
-    this.setState({
-      symbol: e.target.value,
-    });
-  }
-
-  onChangeInstrument(e) {
-    this.setState({
-      instrument: e.target.value,
-    });
-  }
-
-  onChangeDescription(e) {
-    console.log(e);
-    this.setState({
-      description: e.target.value,
-    });
-  }
-
-  onChangeValue(e) {
-    this.setState({
-      value: e.target.value,
-    });
-  }
-
-  onChangeQuantity(e) {
-    this.setState({
-      quantity: e.target.value,
-    });
-  }
-
-  onChangeAvgPrice(e) {
-    this.setState({
-      avgprice: e.target.value,
-    });
-  }
-
-  onChangeCommissions(e) {
-    this.setState({
-      commissions: e.target.value,
-    });
-  }
-
-  onChangeFees(e) {
-    this.setState({
-      fees: e.target.value,
-    });
-  }
-
-  onChangeMultiplier(e) {
-    this.setState({
-      multiplier: e.target.value,
-    });
-  }
-
-  onChangeRootSymbol(e) {
-    this.setState({
-      rootsymbol: e.target.value,
-    });
-  }
-
-  onChangeUnderlyingSymbol(e) {
-    this.setState({
-      underlyingsymbol: e.target.value,
-    });
-  }
-
-  onChangeExpiration(date) {
-    this.setState({
-      expiration: date,
-    });
-  }
-
-  onChangeStrike(e) {
-    this.setState({
-      strike: e.target.value,
-    });
-  }
-
-  onChangeCallPut(e) {
-    this.setState({
-      callput: e.target.value,
-    });
-  }
-
-  onChangeOrder(e) {
-    this.setState({
-      order: e.target.value,
-    });
-  }
-
-  onSubmit(e) {
+  const onSubmit = (e) => {
     e.preventDefault();
 
     const transaction = {
-      account: this.state.account,
-      date: this.state.date,
-      type: this.state.type,
-      action: this.state.action,
-      symbol: this.state.symbol,
-      instrument: this.state.instrument,
-      description: this.state.description,
-      value: this.state.value,
-      quantity: this.state.quantity,
-      avgprice: this.state.avgprice,
-      commissions: this.state.commissions,
-      fees: this.state.fees,
-      multiplier: this.state.multiplier,
-      rootsymbol: this.state.rootsymbol,
-      underlyingsymbol: this.state.underlyingsymbol,
-      expiration: this.state.expiration,
-      strike: this.state.strike,
-      callput: this.state.callput,
-      order: this.state.order,
+      account: account,
+      date: date,
+      type: type,
+      action: action,
+      symbol: symbol,
+      instrument: instrument,
+      description: description,
+      value: value,
+      quantity: quantity,
+      avgprice: avgprice,
+      commissions: commissions,
+      fees: fees,
+      multiplier: multiplier,
+      rootsymbol: rootsymbol,
+      underlyingsymbol: underlyingsymbol,
+      expiration: expiration,
+      strikeprice: strikeprice,
+      callput: callput,
+      order: order,
     };
 
     axios
       .post(
-        "http://localhost:5000/transactions/update/" +
-          this.props.match.params.id,
+        "http://localhost:4000/transactions/update/" +
+          props.match.params.id,
         transaction
       )
       .then((res) => console.log(res.data));
@@ -239,225 +97,229 @@ export default class CreateExercise extends Component {
     window.location = "/transactions";
   }
 
-  render() {
-    return (
-      <div>
-        <h3>Edit Transaction Log</h3>
-        <form onSubmit={this.onSubmit}>
-          <div className="form-group">
-            <label>Account: </label>
-            <select
-              required
-              className="form-control"
-              value={this.state.account}
-              onChange={this.onChangeAccount}
-            >
-              {this.state.accounts.map(function (user) {
-                return (
-                  <option key={user} value={user}>
-                    {user}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+  return (
+    <div>
+      <h3>Edit Transaction Log</h3>
+      <form onSubmit={(e) => onSubmit(e)}>
+        <div className="form-group">
+          <label>Account: </label>
+          <select
+            required
+            className="form-control"
+            value={account}
+            onChange={(e) => setAccount(e.target.value)}
+          >
+            {accounts.map(function (account) {
+              return (
+                <option key={account.account} value={account.account}>
+                  {account.account}
+                </option>
+              );
+            })}
+          </select>
+        </div>
 
-          <div className="form-group">
-            <label>Date: </label>
-            <div>
-              <input
-                type="date"
-                selected={this.state.date}
-                onChange={this.onChangeDate}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>Type: </label>
-            <select
-              required
-              className="form-control"
-              value={this.state.type}
-              onChange={this.onChangeType}
-            >
-              <option value="Trade">Trade</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Action: </label>
+        <div className="form-group">
+          <label>Date: </label>
+          <div>
             <input
-              required
-              className="form-control"
-              value={this.state.action}
-              onChange={this.onChangeAction}
+              type="date"
+              value={date.substring(0,10) || today}
+              onChange={(e) => setDate(e.target.value)}
             />
           </div>
+        </div>
 
-          <div className="form-group">
-            <label>Symbol: </label>
+        <div className="form-group">
+          <label>Type: </label>
+          <select
+            required
+            className="form-control"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+          >
+            <option value="trade">Trade</option>
+            <option value="cash-transfer">Cash Transfer</option>
+            <option value="receive-deliver">Receive | Deliver</option>
+            <option value="dividend">Dividend</option>
+            <option value="interest">Interest</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Action: </label>
+          <input
+            required
+            className="form-control"
+            value={action}
+            onChange={(e) => setAction(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Symbol: </label>
+          <input
+            required
+            className="form-control"
+            value={symbol}
+            onChange={(e) => setSymbol(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Instrument: </label>
+          <input
+            required
+            className="form-control"
+            value={instrument}
+            onChange={(e) => setInstrument(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Description: </label>
+          <input
+            required
+            className="form-control"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Value: </label>
+          <input
+            required
+            className="form-control"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Quantity: </label>
+          <input
+            required
+            className="form-control"
+            value={quantity}
+            onChange={(e) => setAccount(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Avg Price: </label>
+          <input
+            required
+            className="form-control"
+            value={avgprice}
+            onChange={(e) => setAvgprice(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Commissions: </label>
+          <input
+            required
+            className="form-control"
+            value={commissions}
+            onChange={(e) => setCommissions(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Fees: </label>
+          <input
+            required
+            className="form-control"
+            value={fees}
+            onChange={(e) => setFees(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Multiplier: </label>
+          <input
+            required
+            className="form-control"
+            value={multiplier}
+            onChange={(e) => setMultiplier(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Root Symbol: </label>
+          <input
+            required
+            className="form-control"
+            value={rootsymbol}
+            onChange={(e) => setRootsymbol(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Underlying Symbol: </label>
+          <input
+            required
+            className="form-control"
+            value={underlyingsymbol}
+            onChange={(e) => setUnderlyingsymbol(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Expiration: </label>
+          <div>
             <input
-              required
-              className="form-control"
-              value={this.state.symbol}
-              onChange={this.onChangeSymbol}
+              type="date"
+              value={expiration.substring(0,10) || today}
+              onChange={(e) => setExpiration(e.target.value)}
             />
           </div>
+        </div>
 
-          <div className="form-group">
-            <label>Instrument: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.instrument}
-              onChange={this.onChangeInstrument}
-            />
-          </div>
+        <div className="form-group">
+          <label>Strike: </label>
+          <input
+            required
+            className="form-control"
+            value={strikeprice}
+            onChange={(e) => setStrikeprice(e.target.value)}
+          />
+        </div>
 
-          <div className="form-group">
-            <label>Description: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.description}
-              onChange={this.onChangeDescription}
-            />
-          </div>
+        <div className="form-group">
+          <label>Call-Put: </label>
+          <select
+            required
+            className="form-control"
+            value={callput}
+            onChange={(e) => setCallput(e.target.value)}
+          >
+            <option value="Put">Put</option>
+            <option value="Call">Call</option>
+          </select>
+        </div>
 
-          <div className="form-group">
-            <label>Value: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.value}
-              onChange={this.onChangeValue}
-            />
-          </div>
+        <div className="form-group">
+          <label>Order: </label>
+          <input
+            required
+            className="form-control"
+            value={order}
+            onChange={(e) => setOrder(e.target.value)}
+          />
+        </div>
 
-          <div className="form-group">
-            <label>Quantity: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.quantity}
-              onChange={this.onChangeQuantity}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Avg Price: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.avgprice}
-              onChange={this.onChangeAvgPrice}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Commissions: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.commissions}
-              onChange={this.onChangeCommissions}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Fees: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.fees}
-              onChange={this.onChangeFees}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Multiplier: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.multiplier}
-              onChange={this.onChangeMultiplier}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Root Symbol: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.rootsymbol}
-              onChange={this.onChangeRootSymbol}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Underlying Symbol: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.underlyingsymbol}
-              onChange={this.onChangeUnderlyingSymbol}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Expiration: </label>
-            <div>
-              <input
-                type="date"
-                selected={this.state.expiration}
-                onChange={this.onChangeExpiration}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>Strike: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.strike}
-              onChange={this.onChangeStrike}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Call-Put: </label>
-            <select
-              required
-              className="form-control"
-              value={this.state.callput}
-              onChange={this.onChangeCallPut}
-            >
-              <option value="Put">Put</option>
-              <option value="Call">Call</option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label>Order: </label>
-            <input
-              required
-              className="form-control"
-              value={this.state.order}
-              onChange={this.onChangeOrder}
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="submit"
-              value="Update Transaction Log"
-              className="btn btn-primary"
-            />
-          </div>
-        </form>
-      </div>
+        <div className="form-group">
+          <input
+            type="submit"
+            value="Update Transaction Log"
+            className="btn btn-primary"
+          />
+        </div>
+      </form>
+    </div>
     );
   }
-}
+export default EditTransaction

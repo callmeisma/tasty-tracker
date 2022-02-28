@@ -50,7 +50,7 @@ export default class CreateTransaction extends Component {
   }
 
   componentDidMount() {
-    axios.get("http://localhost:5000/accounts/").then((response) => {
+    axios.get("http://localhost:4000/accounts/").then((response) => {
       if (response.data.length > 0) {
         this.setState({
           accounts: response.data.map((accounts) => accounts.account),
@@ -200,7 +200,7 @@ export default class CreateTransaction extends Component {
     };
 
     axios
-      .post("http://localhost:5000/transactions/add", transaction)
+      .post("http://localhost:4000/transactions/add", transaction)
       .then((res) => console.log(res.data));
 
     window.location = "/transactions";
@@ -248,7 +248,12 @@ export default class CreateTransaction extends Component {
               value={this.state.type}
               onChange={this.onChangeType}
             >
-              <option value="Trade">Trade</option>
+              <option value="trade">Trade</option>
+              <option value="cash-transfer">Cash Transfer</option>
+              <option value="receive-deliver">Receive | Deliver</option>
+              <option value="dividend">Dividend</option>
+              <option value="interest">Interest</option>
+              <option value="other">Other</option>
             </select>
           </div>
 

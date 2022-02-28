@@ -13,22 +13,22 @@ const ChartReturns = (props) => {
   const [balances, setBalances] = useState([]);
   const [tableArray, setTableArray] = useState([]);
 
-  const getMonths = (transactions) => {
+  const getMonths = (trades) => {
     const dateList = [];
-    transactions.map((transaction) =>
-      dateList.push(transaction.date.substring(0, 7))
+    trades.map((trade) =>
+      dateList.push(trade.startdate.substring(0, 7))
     );
     setMonths(dateList);
   };
 
-  const getReturns = (transactions, month) => {
-    const dateTrans = transactions.filter(
-      (transaction) => transaction.date.substring(0, 7) === month
+  const getReturns = (trades, month) => {
+    const tradeDate = trades.filter(
+      (trade) => trade.startdate.substring(0, 7) === month
     );
     let returnTotal = 0;
-    dateTrans.map(
-      (dateTran) =>
-        (returnTotal += dateTran.value + dateTran.fees + dateTran.commissions)
+    tradeDate.map(
+      (tradeDate) =>
+        (returnTotal += tradeDate.value + tradeDate.fees + tradeDate.commissions)
     );
 
     return returnTotal;
@@ -43,14 +43,14 @@ const ChartReturns = (props) => {
   const tableData = () => {
     const balanceList = [];
     for (let i = 0; i < months.length; i++) {
-      const gains = getReturns(props.transactions, months[i]);
+      const gains = getReturns(props.trades, months[i]);
       balanceList.push({ date: months[i].substring(2, 7), balance: gains });
     }
     setBalances(balanceList);
   };
 
   useEffect(() => {
-    getMonths(props.transactions);
+    getMonths(props.trades);
     tableData();
   }, [props]);
 

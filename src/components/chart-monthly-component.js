@@ -5,27 +5,30 @@ const ChartMonthly = (props) => {
 
   const getYears = () => {
     const dateList = [];
-    props.transactions.map((transaction) =>
-      dateList.push(transaction.date.substring(0, 4))
-    );
+
+    for (let i = 0; i < props.trades.length; i++) {
+      if (props.trades[i].enddate !== undefined) {
+        dateList.push(props.trades[i].enddate.substring(0, 4))
+      }
+    }
+
     const dateYears = [...new Set(dateList)];
     setYears(dateYears);
   };
 
+  const getClosedTrades = () => {    const dateList = [];
+
+  } 
+
   const getMonthlyReturns = (year, month) => {
-    const inTransactions = props.transactions.filter(
-      (transaction) =>
-        transaction.date.substring(0, 4) === year &&
-        transaction.date.substring(5, 7) === month &&
-        (transaction.type === "Trade" || transaction.type === "Receive Deliver")
+    const inTrades = props.trades.filter(
+      (trade) =>
+        trade.startdate.substring(0, 4) === year &&
+        trade.startdate.substring(5, 7) === month
     );
 
-    return inTransactions.reduce(function (total, currentValue) {
-      var costs = Number(currentValue.fees) + Number(currentValue.value);
-      if (currentValue.commissions !== "--") {
-        costs = costs + Number(currentValue.commissions);
-      }
-      return total + costs;
+    return inTrades.reduce(function (total, currentValue) {
+      return total + currentValue.fees + currentValue.value + currentValue.commissions;
     }, 0);
   };
 

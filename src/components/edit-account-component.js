@@ -7,7 +7,7 @@ const EditAccount = (props) => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/accounts/" + props.match.params.id)
+      .get("http://localhost:4000/accounts/" + props.match.params.id)
       .then((response) => {
         setAccountName(response.data.account);
         setStartingBalance(response.data.startingBalance);
@@ -24,7 +24,7 @@ const EditAccount = (props) => {
 
     axios
       .post(
-        "http://localhost:5000/accounts/update/" + props.match.params.id,
+        "http://localhost:4000/accounts/update/" + props.match.params.id,
         account
       )
       .then((res) => console.log(res.data));

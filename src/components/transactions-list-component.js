@@ -4,27 +4,24 @@ import axios from "axios";
 import uniqid from "uniqid";
 import Pagination from "./pagination-component";
 
-const TransactionsList = () => {
-  const [transactions, setTransactions] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/transactions/")
-      .then((response) => {
-        setTransactions(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+const TransactionsList = (props) => {
 
   const deleteTransaction = (id) => {
     axios
-      .delete("http://localhost:5000/transactions/" + id)
+      .delete("http://localhost:4000/transactions/" + id)
       .then((res) => console.log(res.data));
 
-    const updTransactions = transactions.filter((el) => el._id !== id);
-    setTransactions(updTransactions);
+    const updTransactions = props.transactions.filter((el) => el._id !== id);
+    props.setTransactions(updTransactions);
+  };
+
+  const deleteAllTransactions = (id) => {
+    axios
+      .delete("http://localhost:4000/transactions/")
+      .then((res) => console.log(res.data));
+
+    const updTransactions = []
+    props.setTransactions(updTransactions);
   };
 
   const columns = [
@@ -54,7 +51,11 @@ const TransactionsList = () => {
   return (
     <div className="p-3">
       <h3>Transactions</h3>
+      <p>{props.transactions.length}</p>
+      <div>
       <Pagination />
+      <button onClick={() => deleteAllTransactions()}>Delete All</button>
+      </div>
       <div className="table-responsive">
         <table className="table">
           <thead className="thead-light">
@@ -70,26 +71,26 @@ const TransactionsList = () => {
             </tr>
           </thead>
           <tbody>
-            {transactions.map(function (transaction) {
+            {props.transactions.map(function (transaction) {
               return (
                 <tr id={transaction._id} key={uniqid()}>
                   <td key={uniqid()}>{transaction.account}</td>
-                  <td key={uniqid()}>{transaction.date}</td>
+                  <td key={uniqid()}>{transaction.date.substring(0, 10)}</td>
                   <td key={uniqid()}>{transaction.type}</td>
                   <td key={uniqid()}>{transaction.action}</td>
                   <td key={uniqid()}>{transaction.symbol}</td>
                   <td key={uniqid()}>{transaction.instrument}</td>
                   <td key={uniqid()}>{transaction.description}</td>
                   <td key={uniqid()}>{transaction.value}</td>
+                  <td key={uniqid()}>{transaction.quantity}</td>
                   <td key={uniqid()}>{transaction.avgprice}</td>
                   <td key={uniqid()}>{transaction.commissions}</td>
                   <td key={uniqid()}>{transaction.fees}</td>
                   <td key={uniqid()}>{transaction.multiplier}</td>
                   <td key={uniqid()}>{transaction.rootsymbol}</td>
-                  <td key={uniqid()}>{transaction.rootsymbol}</td>
                   <td key={uniqid()}>{transaction.underlyingsymbol}</td>
                   <td key={uniqid()}>{transaction.expiration}</td>
-                  <td key={uniqid()}>{transaction.strike}</td>
+                  <td key={uniqid()}>{transaction.strikeprice}</td>
                   <td key={uniqid()}>{transaction.callput}</td>
                   <td key={uniqid()}>{transaction.order}</td>
                   <td key={uniqid()}>

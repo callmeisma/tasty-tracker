@@ -1,6 +1,7 @@
 import "./App.css";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import axios from "axios";
 
 import Home from "./components/home";
 import Navbar from "./components/navbar-component";
@@ -12,9 +13,38 @@ import CreateTransaction from "./components/create-transaction-component";
 import CreateAccount from "./components/create-account-component";
 import Header from "./components/header-component";
 import UploadTransactions from "./components/upload-transactions-component";
-import OptionTransform from "./components/option-tranform-component";
+import TradesList from "./components/trades-list-component";
+import TradeConverter from "./components/trade-converter-component";
 
 function App() {
+  const [accounts, setAccounts] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  const [trades, setTrades] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:4000/transactions/")
+      .then((response) => {
+        setTransactions(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios
+    .get("http://localhost:4000/accounts/")
+    .then((response) => {
+      setAccounts(response.data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }, []);
+
+  useEffect(() => {
+    setTrades(TradeConverter(transactions))
+  }, [transactions])
+
   return (
     <Router>
       <div className="App">
@@ -23,31 +53,15 @@ function App() {
           <div className="row">
             <Navbar />
             <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-              <Route path="/" exact component={Home} />
-              <Route path="/accounts" exact component={AccountsList} />
-              <Route path="/transactions" exact component={TransactionsList} />
-              <Route
-                path="/edit-transaction/:id"
-                exact
-                component={EditTransaction}
-              />
+              <Route path="/" exact render={() => <Home accounts={accounts} trades={trades}/>} />
+              <Route path="/accounts" exact render={() => <AccountsList accounts={accounts} setAccounts={setAccounts} trades={trades}/>} />
+              <Route path="/transactions" exact render={() => <TransactionsList transactions={transactions} setTransactions={setTransactions}/>} />
+              <Route path="/trades" exact render={() => <TradesList trades={trades}/>}/>
+              <Route path="/edit-transaction/:id" exact component={EditTransaction} />
               <Route path="/edit-account/:id" exact component={EditAccount} />
-              <Route
-                path="/create-transaction"
-                exact
-                component={CreateTransaction}
-              />
+              <Route path="/create-transaction" exact component={CreateTransaction} />
               <Route path="/create-account" exact component={CreateAccount} />
-              <Route
-                path="/upload-transactions"
-                exact
-                component={UploadTransactions}
-              />
-              <Route
-                path="/option-transform"
-                exact
-                component={OptionTransform}
-              />
+              <Route path="/upload-transactions" exact component={UploadTransactions} />
             </main>
           </div>
         </div>

@@ -1,103 +1,100 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import moment from "moment";
 // import ChartMonthlyAvg from "./chart-monthly-avg-component";
 import ChartMonthly from "./chart-monthly-component";
-import ChartReturns from "./chart-returns-component";
-import ChartTopSymbols from "./chart-top-symbols-component";
+// import ChartReturns from "./chart-returns-component";
+// import ChartTopSymbols from "./chart-top-symbols-component";
 
 const Home = (props) => {
   let today = moment().format("YYYY-MM-DD");
-  const [transactions, setTransactions] = useState([]);
-  const [accounts, setAccounts] = useState([]);
   const [account, setAccount] = useState("All");
-  const [startDate, setStartDate] = useState(today);
-  const [endDate, setEndDate] = useState(today);
-
-  useEffect(() => {
-    axios
-      .get("http://localhost:5000/transactions/")
-      .then((response) => {
-        setTransactions(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    axios
-      .get("http://localhost:5000/accounts/")
-      .then((response) => {
-        setAccounts(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
 
   const filterByDate = () => {
-    const dateTrans = transactions.filter((transaction) => {
-      return transaction.date > startDate && transaction.date < endDate;
+    const tradeDate = props.trades.filter((trades) => {
+      return trades.startDate > startDate && trades.endDate < endDate;
     });
-    return dateTrans;
+    return tradeDate;
   };
 
   const filterByAccount = (account) => {
-    const dateTrans = filterByDate();
-    const accTrans = dateTrans.filter((transaction) => {
-      return transaction.account === account;
+    const tradeDate = filterByDate();
+    const tradeAccount = tradeDate.filter((trade) => {
+      return trade.account === account;
     });
 
-    return accTrans;
+    return tradeAccount;
   };
 
   const profitLoss = (account) => {
     if (account !== "All") {
-      const accTrans = filterByAccount(account);
-      return accTrans.reduce(function (accumulator, transaction) {
-        return accumulator + transaction.value;
+      const tradeAccount = filterByAccount(account);
+      return tradeAccount.reduce(function (accumulator, trade) {
+        return accumulator + trade.value;
       }, 0);
     } else {
       const timeTrans = filterByDate();
-      return timeTrans.reduce(function (accumulator, transaction) {
-        return accumulator + transaction.value;
+      return timeTrans.reduce(function (accumulator, trade) {
+        return accumulator + trade.value;
       }, 0);
     }
   };
 
   const feesOpen = (account) => {
     if (account !== "All") {
-      const accTrans = filterByAccount(account);
-      return accTrans.reduce(function (accumulator, transaction) {
-        return accumulator + transaction.fees + transaction.commissions;
+      const tradeAccount = filterByAccount(account);
+      return tradeAccount.reduce(function (accumulator, trade) {
+        return accumulator + trade.fees + trade.commissions;
       }, 0);
     } else {
       const timeTrans = filterByDate();
-      return timeTrans.reduce(function (accumulator, transaction) {
-        return accumulator + transaction.fees + transaction.commissions;
+      return timeTrans.reduce(function (accumulator, trade) {
+        return accumulator + trade.fees + trade.commissions;
       }, 0);
     }
   };
 
   const percReturn = () => {
     let investment = 0;
-    for (let i = 0; i < accounts.length; i++) {
-      investment += accounts[i].startingBalance;
+    for (let i = 0; i < props.accounts.length; i++) {
+      investment += props.accounts[i].startingBalance;
     }
     return profitLoss(account) / investment;
   };
 
-  const transactionsLength = () => {
-    const dateTrans = filterByDate();
-    return dateTrans.length;
+  const tradesLength = () => {
+    const tradeDate = filterByDate();
+    return tradeDate.length;
   };
 
   const dateRangeUpdate = (range) => {
+    console.log(range)
     switch (true) {
-      case range === today:
+      case range === "today":
         setStartDate(today);
         setEndDate(today);
+        break
+      case range === "last-week":
+        setStartDate(today);
+        setEndDate(today);
+        break
+      case range === "last-month":
+        setStartDate(today);
+        setEndDate(today);
+        break
+      case range === "year-to-date":
+        setStartDate(today);
+        setEndDate(today);
+        break
+      case range === "last-year":
+        setStartDate(today);
+        setEndDate(today);
+        break
+      case range === "all-time":
+        setStartDate("2018-01-01");
+        setEndDate("2023-01-01");
         break;
-
       default:
         break;
     }
@@ -108,7 +105,7 @@ const Home = (props) => {
       <form>
         <div className="input-group mb-3">
           <label className="input-group-text" htmlFor="inputAccount">
-            Account:{" "}
+            Account:{""}
           </label>
           <select
             required
@@ -117,7 +114,7 @@ const Home = (props) => {
             onChange={(e) => setAccount(e.target.value)}
           >
             <option>All</option>
-            {accounts.map(function (accOpt) {
+            {props.accounts.map(function (accOpt) {
               return (
                 <option key={accOpt.account} value={accOpt.account}>
                   {accOpt.account}
@@ -134,15 +131,16 @@ const Home = (props) => {
             required
             className="form-control"
             id="dateRange"
+            defaultValue="all-time"
             onChange={(e) => dateRangeUpdate(e.target.value)}
           >
             <option value="today">Today</option>
-            <option>Last Week</option>
-            <option>Last Month</option>
-            <option>Year to Date</option>
-            <option>Last Year</option>
-            <option>All Time</option>
-            <option>Custom</option>
+            <option value="last-week">Last Week</option>
+            <option value="last-month">Last Month</option>
+            <option value="year-to-date">Year to Date</option>
+            <option value="last-year">Last Year</option>
+            <option value="all-time">All Time</option>
+            <option value="custom">Custom</option>
           </select>
           <label className="input-group-text" htmlFor="startDate">
             Start Date
@@ -184,19 +182,19 @@ const Home = (props) => {
           <h5>${feesOpen(account).toFixed(2)}</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
-          <p>Transactions</p>
-          <h5>{transactionsLength()}</h5>
+          <p>Trades</p>
+          <h5>{tradesLength()}</h5>
         </div>
       </div>
+      <ChartMonthly trades={props.trades} />
       {/* <ChartMonthlyAvg years={years} /> */}
-      <ChartMonthly transactions={transactions} />
-      <ChartReturns
+      {/* <ChartReturns
         account={account}
-        transactions={transactions}
+        trades={props.trades}
         startDate={startDate}
         endDate={endDate}
-      />
-      <ChartTopSymbols />
+      /> */}
+      {/* <ChartTopSymbols /> */}
     </div>
   );
 };

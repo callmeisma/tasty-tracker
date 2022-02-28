@@ -7,48 +7,57 @@ router.route("/").get((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.route("/").delete((req, res) => {
+  Transaction.deleteMany({}, function(err, result) {
+    if (err) {
+      res.send('whack');
+    } else {
+      res.send(result);
+    }
+  })
+});
+
 router.route("/add").post((req, res) => {
-  console.log(req.body);
   const account = req.body.account;
-  const date = Date.parse(req.body.date);
-  const type = req.body.type;
   const action = req.body.action;
-  const symbol = req.body.symbol;
-  const instrument = req.body.instrument;
-  const description = req.body.description;
-  const value = Number(req.body.value);
-  const quantity = Number(req.body.quantity);
   const avgprice = Number(req.body.avgprice);
-  const commissions = Number(req.body.commissions);
-  const fees = Number(req.body.fees);
-  const multiplier = Number(req.body.multiplier);
-  const rootsymbol = req.body.rootsymbol;
-  const underlyingsymbol = req.body.underlyingsymbol;
-  const expiration = Date.parse(req.body.expiration);
-  const strike = Number(req.body.strike);
   const callput = req.body.callput;
+  const commissions = Number(req.body.commissions);
+  const date = Date.parse(req.body.date);
+  const description = req.body.description;
+  const expiration = Date.parse(req.body.expiration);
+  const fees = Number(req.body.fees);
+  const instrument = req.body.instrument;
+  const multiplier = Number(req.body.multiplier);
   const order = Number(req.body.order);
+  const quantity = Number(req.body.quantity);
+  const rootsymbol = req.body.rootsymbol;
+  const strikeprice = Number(req.body.strikeprice);
+  const symbol = req.body.symbol;
+  const type = req.body.type;
+  const underlyingsymbol = req.body.underlyingsymbol;
+  const value = Number(req.body.value);
 
   const newTransaction = new Transaction({
     account,
-    date,
-    type,
     action,
-    symbol,
-    instrument,
-    description,
-    value,
-    quantity,
     avgprice,
-    commissions,
-    fees,
-    multiplier,
-    rootsymbol,
-    underlyingsymbol,
-    expiration,
-    strike,
     callput,
+    commissions,
+    date,
+    description,
+    expiration,
+    fees,
+    instrument,
+    multiplier,
     order,
+    quantity,
+    rootsymbol,
+    strikeprice,
+    symbol,
+    type,
+    underlyingsymbol,
+    value,
   });
 
   newTransaction
@@ -75,11 +84,11 @@ router.route("/update/:id").post((req, res) => {
     transaction.type = req.body.type;
     transaction.action = req.body.action;
     transaction.symbol = req.body.symbol;
-    transaction.instrumenttype = req.body.instrumenttype;
+    transaction.instrument = req.body.instrument;
     transaction.description = req.body.description;
     transaction.value = Number(req.body.value);
     transaction.quantity = Number(req.body.quantity);
-    transaction.averageprice = Number(req.body.averageprice);
+    transaction.avgprice = Number(req.body.avgprice);
     transaction.commissions = Number(req.body.commissions);
     transaction.fees = Number(req.body.fees);
     transaction.multiplier = Number(req.body.multiplier);
