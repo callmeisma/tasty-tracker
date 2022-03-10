@@ -38,7 +38,7 @@ const TransactionsList = (props) => {
         accessor: "date",
         Header: "Date",
         Cell: ({ value }) => {
-          return format(new Date(value), "dd/MM/yyyy");
+          return format(new Date(value), "MM/dd/yyyy");
         },
       },
       { accessor: "type", Header: "Type" },
@@ -49,7 +49,7 @@ const TransactionsList = (props) => {
         accessor: "expiration",
         Header: "Expiration",
         Cell: ({ value }) => {
-          return format(new Date(value), "dd/MM/yyyy");
+          return format(new Date(value), "MM/dd/yyyy");
         },
       },
       { accessor: "callput", Header: "C/P" },

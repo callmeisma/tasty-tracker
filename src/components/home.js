@@ -31,12 +31,12 @@ const Home = (props) => {
     if (account !== "All") {
       const tradeAccount = filterByAccount(account);
       return tradeAccount.reduce(function (accumulator, trade) {
-        return accumulator + trade.value;
+        return accumulator + trade.total;
       }, 0);
     } else {
       const timeTrans = filterByDate();
       return timeTrans.reduce(function (accumulator, trade) {
-        return accumulator + trade.value;
+        return accumulator + trade.total;
       }, 0);
     }
   };
@@ -69,28 +69,28 @@ const Home = (props) => {
   };
 
   const dateRangeUpdate = (range) => {
-    console.log(range)
+    console.log(range);
     switch (true) {
       case range === "today":
         setStartDate(today);
         setEndDate(today);
-        break
+        break;
       case range === "last-week":
         setStartDate(today);
         setEndDate(today);
-        break
+        break;
       case range === "last-month":
         setStartDate(today);
         setEndDate(today);
-        break
+        break;
       case range === "year-to-date":
         setStartDate(today);
         setEndDate(today);
-        break
+        break;
       case range === "last-year":
         setStartDate(today);
         setEndDate(today);
-        break
+        break;
       case range === "all-time":
         setStartDate("2018-01-01");
         setEndDate("2023-01-01");

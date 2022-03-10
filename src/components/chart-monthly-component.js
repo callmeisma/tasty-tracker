@@ -8,7 +8,7 @@ const ChartMonthly = (props) => {
 
     for (let i = 0; i < props.trades.length; i++) {
       if (props.trades[i].enddate !== undefined) {
-        dateList.push(props.trades[i].enddate.substring(0, 4))
+        dateList.push(props.trades[i].enddate.substring(0, 4));
       }
     }
 
@@ -16,19 +16,19 @@ const ChartMonthly = (props) => {
     setYears(dateYears);
   };
 
-  const getClosedTrades = () => {    const dateList = [];
-
-  } 
+  const realizedTrades = () => {
+    return props.trades.filter((trade) => trade.enddate !== undefined);
+  };
 
   const getMonthlyReturns = (year, month) => {
-    const inTrades = props.trades.filter(
+    const inTrades = realizedTrades().filter(
       (trade) =>
-        trade.startdate.substring(0, 4) === year &&
-        trade.startdate.substring(5, 7) === month
+        trade.enddate.substring(0, 4) === year &&
+        trade.enddate.substring(5, 7) === month
     );
 
     return inTrades.reduce(function (total, currentValue) {
-      return total + currentValue.fees + currentValue.value + currentValue.commissions;
+      return total + currentValue.total;
     }, 0);
   };
 

@@ -18,14 +18,14 @@ const TradesList = (props) => {
         accessor: "startdate",
         Header: "Start-Date",
         Cell: ({ value }) => {
-          return format(new Date(value), "dd/MM/yyyy");
+          return format(new Date(value), "MM/dd/yyyy");
         },
       },
       {
         accessor: "enddate",
         Header: "End-Date",
         Cell: ({ value }) => {
-          return value ? format(new Date(value), "dd/MM/yyyy") : "";
+          return value ? format(new Date(value), "MM/dd/yyyy") : "";
         },
       },
       { accessor: "symbol", Header: "Symbol" },

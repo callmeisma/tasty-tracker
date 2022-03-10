@@ -4,7 +4,6 @@ import axios from "axios";
 import uniqid from "uniqid";
 
 const AccountsList = (props) => {
-  
   const deleteAccount = (id) => {
     axios
       .delete("http://localhost:4000/accounts/" + id)
@@ -13,7 +12,7 @@ const AccountsList = (props) => {
     const updAccounts = props.accounts.filter((el) => el._id !== id);
     props.setAccounts(updAccounts);
   };
-  
+
   return (
     <div>
       <h3>Accounts</h3>
@@ -21,7 +20,7 @@ const AccountsList = (props) => {
         <thead className="thead-light">
           <tr>
             <th key="account">Account</th>
-            <th key="starting-balance">Starting Balance</th>
+            <th key="balance">Balance</th>
             <th key="actions">Actions</th>
           </tr>
         </thead>
