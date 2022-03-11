@@ -26,7 +26,7 @@ const CreateAccount = () => {
       <form className="m-3 w-75" onSubmit={(e) => onSubmit(e)}>
         <div className="input-group mb-3">
           <label htmlFor="accountName" className="input-group-text">
-            Account Name:
+            Account:
           </label>
           <input
             type="text"

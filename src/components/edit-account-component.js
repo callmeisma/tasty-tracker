@@ -47,7 +47,7 @@ const EditAccount = (props) => {
           />
         </div>
         <div className="form-group">
-          <label>Value: </label>
+          <label>Starting Balance: </label>
           <input
             required
             className="form-control"

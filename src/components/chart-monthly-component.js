@@ -2,13 +2,25 @@ import React, { useState, useEffect } from "react";
 
 const ChartMonthly = (props) => {
   const [years, setYears] = useState([]);
+  const [trades, setTrades] = useState([]);
+
+  const filterByAccount = (account) => {
+    if (props.account === "all") {
+      return setTrades(props.trades);
+    } else {
+      const accountTrades = props.trades.filter((trade) => {
+        return trade.account === account;
+      });
+      return setTrades(accountTrades);
+    }
+  };
 
   const getYears = () => {
     const dateList = [];
 
-    for (let i = 0; i < props.trades.length; i++) {
-      if (props.trades[i].enddate !== undefined) {
-        dateList.push(props.trades[i].enddate.substring(0, 4));
+    for (let i = 0; i < trades.length; i++) {
+      if (trades[i].enddate !== undefined) {
+        dateList.push(trades[i].enddate.substring(0, 4));
       }
     }
 
@@ -33,11 +45,18 @@ const ChartMonthly = (props) => {
   };
 
   useEffect(() => {
-    getYears();
+    filterByAccount(props.account);
   }, [props]);
+
+  useEffect(() => {
+    getYears();
+  }, [trades]);
 
   return (
     <div className="table-responsive shadow p-3 mb-5 bg-body rounded">
+      <p className="text-muted">
+        <small>Realized Monthly Return Charts</small>
+      </p>
       <table className="table table-hover">
         <thead>
           <tr>

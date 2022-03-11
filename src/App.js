@@ -32,18 +32,18 @@ function App() {
       });
 
     axios
-    .get("http://localhost:4000/accounts/")
-    .then((response) => {
-      setAccounts(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+      .get("http://localhost:4000/accounts/")
+      .then((response) => {
+        setAccounts(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   useEffect(() => {
-    setTrades(TradeConverter(transactions))
-  }, [transactions])
+    setTrades(TradeConverter(transactions));
+  }, [transactions]);
 
   return (
     <Router>
@@ -53,15 +53,54 @@ function App() {
           <div className="row">
             <Navbar />
             <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-              <Route path="/" exact render={() => <Home accounts={accounts} trades={trades}/>} />
-              <Route path="/accounts" exact render={() => <AccountsList accounts={accounts} setAccounts={setAccounts} trades={trades}/>} />
-              <Route path="/transactions" exact render={() => <TransactionsList transactions={transactions} setTransactions={setTransactions}/>} />
-              <Route path="/trades" exact render={() => <TradesList trades={trades}/>}/>
-              <Route path="/edit-transaction/:id" exact component={EditTransaction} />
+              <Route
+                path="/"
+                exact
+                render={() => <Home accounts={accounts} trades={trades} />}
+              />
+              <Route
+                path="/accounts"
+                exact
+                render={() => (
+                  <AccountsList
+                    accounts={accounts}
+                    setAccounts={setAccounts}
+                    transactions={transactions}
+                  />
+                )}
+              />
+              <Route
+                path="/transactions"
+                exact
+                render={() => (
+                  <TransactionsList
+                    transactions={transactions}
+                    setTransactions={setTransactions}
+                  />
+                )}
+              />
+              <Route
+                path="/trades"
+                exact
+                render={() => <TradesList trades={trades} />}
+              />
+              <Route
+                path="/edit-transaction/:id"
+                exact
+                component={EditTransaction}
+              />
               <Route path="/edit-account/:id" exact component={EditAccount} />
-              <Route path="/create-transaction" exact component={CreateTransaction} />
+              <Route
+                path="/create-transaction"
+                exact
+                component={CreateTransaction}
+              />
               <Route path="/create-account" exact component={CreateAccount} />
-              <Route path="/upload-transactions" exact component={UploadTransactions} />
+              <Route
+                path="/upload-transactions"
+                exact
+                component={UploadTransactions}
+              />
             </main>
           </div>
         </div>

@@ -7,7 +7,7 @@ import ChartMonthly from "./chart-monthly-component";
 
 const Home = (props) => {
   let today = moment().format("YYYY-MM-DD");
-  const [account, setAccount] = useState("All");
+  const [accSel, setAccSel] = useState("all");
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
 
@@ -60,7 +60,7 @@ const Home = (props) => {
     for (let i = 0; i < props.accounts.length; i++) {
       investment += props.accounts[i].startingBalance;
     }
-    return profitLoss(account) / investment;
+    return profitLoss(accSel) / investment;
   };
 
   const tradesLength = () => {
@@ -103,6 +103,7 @@ const Home = (props) => {
   return (
     <div className="p-3">
       <form>
+        {/* accounts */}
         <div className="input-group mb-3">
           <label className="input-group-text" htmlFor="inputAccount">
             Account:{""}
@@ -111,9 +112,12 @@ const Home = (props) => {
             required
             className="form-control"
             id="inputAccount"
-            onChange={(e) => setAccount(e.target.value)}
+            onChange={(e) => setAccSel(e.target.value.toLowerCase())}
+            defaultValue="all"
           >
-            <option>All</option>
+            <option key="all" value="all">
+              All
+            </option>
             {props.accounts.map(function (accOpt) {
               return (
                 <option key={accOpt.account} value={accOpt.account}>
@@ -123,6 +127,7 @@ const Home = (props) => {
             })}
           </select>
         </div>
+        {/* Date Ranges */}
         <div className="input-group mb-3">
           <label className="input-group-text" htmlFor="startDate">
             Date Range
@@ -167,7 +172,7 @@ const Home = (props) => {
           />
         </div>
       </form>
-      <hr></hr>
+      {/* Overall Info */}
       <div className="d-flex justify-content-evenly shadow p-3 mb-5 bg-body rounded">
         <div className="d-flex flex-column align-items-center">
           <p>Return</p>
@@ -175,18 +180,18 @@ const Home = (props) => {
         </div>
         <div className="d-flex flex-column align-items-center">
           <p>P/L</p>
-          <h5>${profitLoss(account).toFixed(2)}</h5>
+          <h5>${profitLoss(accSel).toFixed(2)}</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
           <p>Fees</p>
-          <h5>${feesOpen(account).toFixed(2)}</h5>
+          <h5>${feesOpen(accSel).toFixed(2)}</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
           <p>Trades</p>
           <h5>{tradesLength()}</h5>
         </div>
       </div>
-      <ChartMonthly trades={props.trades} />
+      <ChartMonthly trades={props.trades} account={accSel} />
       {/* <ChartMonthlyAvg years={years} /> */}
       {/* <ChartReturns
         account={account}
