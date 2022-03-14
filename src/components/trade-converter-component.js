@@ -18,7 +18,7 @@ const TradeConverter = (transactions) => {
       fees: openTrans[i].fees,
       multiplier: openTrans[i].multiplier,
       strike: openTrans[i].strikeprice,
-      symbol: openTrans[i].underlyingsymbol,
+      symbol: openTrans[i].symbol,
       value: openTrans[i].value,
       callput: openTrans[i].callput,
       total: openTrans[i].value + openTrans[i].fees + openTrans[i].commissions,
@@ -30,7 +30,7 @@ const TradeConverter = (transactions) => {
   for (let i = 0; i < tradelist.length; i++) {
     for (let j = 0; j < closeTrans.length; j++) {
       if (
-        tradelist[i].symbol === closeTrans[j].underlyingsymbol &&
+        tradelist[i].symbol === closeTrans[j].symbol &&
         tradelist[i].strike === closeTrans[j].strikeprice &&
         tradelist[i].expiration === closeTrans[j].expiration &&
         tradelist[i].callput === closeTrans[j].callput
@@ -45,7 +45,6 @@ const TradeConverter = (transactions) => {
       }
     }
   }
-
   return tradelist;
 };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import uniqid from "uniqid";
@@ -17,14 +17,33 @@ const AccountsList = (props) => {
     let result = startingBalance;
 
     for (let i = 0; i < props.transactions.length; i++) {
+      if (props.transactions[i].account === account) {
+        result += props.transactions[i].value;
+      }
+    }
+    return result.toFixed(2);
+  };
+
+  const getFees = (account) => {
+    let result = 0;
+
+    for (let i = 0; i < props.transactions.length; i++) {
+      if (props.transactions[i].account === account) {
+        result += props.transactions[i].fees;
+      }
+    }
+    return result.toFixed(3);
+  };
+
+  const getCommissions = (account) => {
+    let result = 0;
+
+    for (let i = 0; i < props.transactions.length; i++) {
       if (
-        props.transactions[i].commissions !== "--" &&
-        props.transactions[i].account === account
+        props.transactions[i].account === account &&
+        props.transactions.commissions !== "--"
       ) {
-        result +=
-          props.transactions[i].value +
-          props.transactions[i].commissions +
-          props.transactions[i].fees;
+        result += props.transactions[i].commissions;
       }
     }
     return result.toFixed(2);
@@ -39,11 +58,10 @@ const AccountsList = (props) => {
     );
 
     for (let i = 0; i < trades.length; i++) {
-      if (props.transactions[i].commissions !== "--") {
-        result +=
-          props.transactions[i].value +
-          props.transactions[i].commissions +
-          props.transactions[i].fees;
+      if (trades[i].commissions !== "--") {
+        result += trades[i].value;
+        result += trades[i].commissions;
+        result += trades[i].fees;
       }
     }
     return result.toFixed(2);
@@ -57,6 +75,8 @@ const AccountsList = (props) => {
           <tr>
             <th key="account">Account</th>
             <th key="startBalance">Start Balance</th>
+            <th key="commissions">Commissions</th>
+            <th key="fees">Fees</th>
             <th key="balance">Balance</th>
             <th key="profitloss">P/L</th>
             <th key="actions">Actions</th>
@@ -68,6 +88,8 @@ const AccountsList = (props) => {
               <tr key={account._id}>
                 <td key={account.account}>{account.account}</td>
                 <td key={account.startingBalance}>{account.startingBalance}</td>
+                <td key={uniqid()}>{getCommissions(account.account)}</td>
+                <td key={uniqid()}>{getFees(account.account)}</td>
                 <td key={uniqid()}>
                   ${getBalance(account.account, account.startingBalance)}
                 </td>

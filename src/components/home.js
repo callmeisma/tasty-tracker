@@ -1,99 +1,160 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import moment from "moment";
-// import ChartMonthlyAvg from "./chart-monthly-avg-component";
 import ChartMonthly from "./chart-monthly-component";
-// import ChartReturns from "./chart-returns-component";
+// import ChartMonthlyAvg from "./chart-monthly-avg-component";
 // import ChartTopSymbols from "./chart-top-symbols-component";
+// import ChartReturns from "./chart-returns-component";
 
 const Home = (props) => {
   let today = moment().format("YYYY-MM-DD");
   const [accSel, setAccSel] = useState("all");
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
+  const [startDate, setStartDate] = useState(today);
+  const [endDate, setEndDate] = useState(today);
 
-  const filterByDate = () => {
-    const tradeDate = props.trades.filter((trades) => {
-      return trades.startDate > startDate && trades.endDate < endDate;
+  useEffect(() => {
+    dateRangeUpdate("year-to-date");
+  }, []);
+
+  const filterTrades = (account, start, end) => {
+    // Filter by start and end dates selected
+    const tradesInDateRange = props.trades.filter((trade) => {
+      return (
+        trade.startdate.substring(0, 10) >= start &&
+        trade.enddate !== undefined &&
+        trade.enddate.substring(0, 10) <= end
+      );
     });
-    return tradeDate;
-  };
-
-  const filterByAccount = (account) => {
-    const tradeDate = filterByDate();
-    const tradeAccount = tradeDate.filter((trade) => {
-      return trade.account === account;
-    });
-
-    return tradeAccount;
-  };
-
-  const profitLoss = (account) => {
-    if (account !== "All") {
-      const tradeAccount = filterByAccount(account);
-      return tradeAccount.reduce(function (accumulator, trade) {
-        return accumulator + trade.total;
-      }, 0);
+    // Filter by account selected
+    if (account === "all") {
+      return tradesInDateRange;
     } else {
-      const timeTrans = filterByDate();
-      return timeTrans.reduce(function (accumulator, trade) {
-        return accumulator + trade.total;
-      }, 0);
+      const tradesInDateAcc = tradesInDateRange.filter((trade) => {
+        return trade.account === account;
+      });
+      return tradesInDateAcc;
     }
   };
 
-  const feesOpen = (account) => {
-    if (account !== "All") {
-      const tradeAccount = filterByAccount(account);
-      return tradeAccount.reduce(function (accumulator, trade) {
-        return accumulator + trade.fees + trade.commissions;
-      }, 0);
-    } else {
-      const timeTrans = filterByDate();
-      return timeTrans.reduce(function (accumulator, trade) {
-        return accumulator + trade.fees + trade.commissions;
-      }, 0);
-    }
+  const profitLoss = (account, start, end) => {
+    const trades = filterTrades(account, start, end);
+    return trades.reduce(function (accumulator, trade) {
+      return accumulator + trade.total;
+    }, 0);
   };
 
-  const percReturn = () => {
+  const feesOpen = (account, start, end) => {
+    const trades = filterTrades(account, start, end);
+    return trades.reduce(function (accumulator, trade) {
+      return accumulator + trade.fees + trade.commissions;
+    }, 0);
+  };
+
+  const percReturn = (account, start, end) => {
+    // Get account money movements
+    let moneyMovement = [];
+    if (account === "all") {
+      moneyMovement = props.transactions.filter(
+        (transaction) => transaction.type === "Money Movement"
+      );
+    } else {
+      moneyMovement = props.transactions.filter(
+        (transaction) =>
+          transaction.account === account &&
+          transaction.type === "Money Movement"
+      );
+    }
+
+    // Get money invested
     let investment = 0;
-    for (let i = 0; i < props.accounts.length; i++) {
-      investment += props.accounts[i].startingBalance;
+    // Get starting balances
+    if (account === "all") {
+      for (let i = 0; i < props.accounts.length; i++) {
+        investment += props.accounts[i].startingBalance;
+      }
+    } else {
+      for (let i = 0; i < props.accounts.length; i++) {
+        if (props.accounts[i] === account)
+          investment += props.accounts[i].startingBalance;
+      }
     }
-    return profitLoss(accSel) / investment;
+    // Get money invested
+    for (let i = 0; i < moneyMovement.length; i++) {
+      investment += moneyMovement[i].value;
+    }
+    return (profitLoss(accSel, start, end) / investment) * 100;
   };
 
-  const tradesLength = () => {
-    const tradeDate = filterByDate();
-    return tradeDate.length;
+  const getFirstLastDate = (account) => {
+    const dates = [];
+
+    if (account === "all") {
+      for (let i = 0; i < props.trades.length; i++) {
+        dates.push(props.trades[i].startdate, props.trades[i].enddate);
+      }
+    } else {
+      const accTrades = props.trades.filter(
+        (trade) => trade.account === account
+      );
+      for (let i = 0; i < accTrades.length; i++) {
+        dates.push(accTrades[i].startdate, accTrades[i].enddate);
+      }
+    }
+
+    const cleanDates = dates.filter((date) => date !== undefined).sort();
+    const firstDate = cleanDates[0];
+    const lastDate = cleanDates[cleanDates.length - 1];
+
+    return [firstDate, lastDate];
   };
 
   const dateRangeUpdate = (range) => {
-    console.log(range);
     switch (true) {
       case range === "today":
-        setStartDate(today);
-        setEndDate(today);
+        document.getElementById("startDate").disabled = true;
+        document.getElementById("endDate").disabled = true;
+        setStartDate(moment().startOf("day").format("YYYY-MM-DD"));
+        setEndDate(moment().format("YYYY-MM-DD"));
         break;
-      case range === "last-week":
-        setStartDate(today);
-        setEndDate(today);
+      case range === "week-to-date":
+        document.getElementById("startDate").disabled = true;
+        document.getElementById("endDate").disabled = true;
+        setStartDate(moment(today).startOf("week").format("YYYY-MM-DD"));
+        setEndDate(moment(today).endOf("day").format("YYYY-MM-DD"));
+        break;
+      case range === "month-to-date":
+        document.getElementById("startDate").disabled = true;
+        document.getElementById("endDate").disabled = true;
+        setStartDate(moment(today).startOf("month").format("YYYY-MM-DD"));
+        setEndDate(moment(today).format("YYYY-MM-DD"));
         break;
       case range === "last-month":
-        setStartDate(today);
-        setEndDate(today);
+        document.getElementById("startDate").disabled = true;
+        document.getElementById("endDate").disabled = true;
+        setStartDate(moment(today).subtract(1, "month").format("YYYY-MM-DD"));
+        setEndDate(moment(today).endOf("day").format("YYYY-MM-DD"));
         break;
       case range === "year-to-date":
-        setStartDate(today);
-        setEndDate(today);
+        document.getElementById("startDate").disabled = true;
+        document.getElementById("endDate").disabled = true;
+        setStartDate(moment(today).startOf("year").format("YYYY-MM-DD"));
+        setEndDate(moment(today).format("YYYY-MM-DD"));
         break;
       case range === "last-year":
-        setStartDate(today);
-        setEndDate(today);
+        document.getElementById("startDate").disabled = true;
+        document.getElementById("endDate").disabled = true;
+        setStartDate(moment(today).subtract(1, "year").format("YYYY-MM-DD"));
+        setEndDate(moment().endOf("day").format("YYYY-MM-DD"));
         break;
       case range === "all-time":
-        setStartDate("2018-01-01");
-        setEndDate("2023-01-01");
+        const dates = getFirstLastDate(accSel);
+        document.getElementById("startDate").disabled = true;
+        document.getElementById("endDate").disabled = true;
+        setStartDate(moment(dates[0]).format("YYYY-MM-DD"));
+        setEndDate(moment(dates[1]).format("YYYY-MM-DD"));
+        break;
+      case range === "custom":
+        document.getElementById("startDate").disabled = false;
+        document.getElementById("endDate").disabled = false;
         break;
       default:
         break;
@@ -136,11 +197,12 @@ const Home = (props) => {
             required
             className="form-control"
             id="dateRange"
-            defaultValue="all-time"
+            defaultValue="year-to-date"
             onChange={(e) => dateRangeUpdate(e.target.value)}
           >
             <option value="today">Today</option>
-            <option value="last-week">Last Week</option>
+            <option value="week-to-date">Week to Date</option>
+            <option value="month-to-date">Month to Date</option>
             <option value="last-month">Last Month</option>
             <option value="year-to-date">Year to Date</option>
             <option value="last-year">Last Year</option>
@@ -157,6 +219,7 @@ const Home = (props) => {
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
+            disabled
           />
           <label className="input-group-text" htmlFor="endDate">
             End Date
@@ -169,6 +232,7 @@ const Home = (props) => {
             value={endDate}
             min={startDate}
             onChange={(e) => setEndDate(e.target.value)}
+            disabled
           />
         </div>
       </form>
@@ -176,19 +240,19 @@ const Home = (props) => {
       <div className="d-flex justify-content-evenly shadow p-3 mb-5 bg-body rounded">
         <div className="d-flex flex-column align-items-center">
           <p>Return</p>
-          <h5>{percReturn().toFixed(1)}%</h5>
+          <h5>{percReturn(accSel, startDate, endDate).toFixed(2)}%</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
           <p>P/L</p>
-          <h5>${profitLoss(accSel).toFixed(2)}</h5>
+          <h5>${profitLoss(accSel, startDate, endDate).toFixed(2)}</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
           <p>Fees</p>
-          <h5>${feesOpen(accSel).toFixed(2)}</h5>
+          <h5>${feesOpen(accSel, startDate, endDate).toFixed(2)}</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
           <p>Trades</p>
-          <h5>{tradesLength()}</h5>
+          <h5>{filterTrades(accSel, startDate, endDate).length}</h5>
         </div>
       </div>
       <ChartMonthly trades={props.trades} account={accSel} />

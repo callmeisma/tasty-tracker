@@ -56,7 +56,13 @@ function App() {
               <Route
                 path="/"
                 exact
-                render={() => <Home accounts={accounts} trades={trades} />}
+                render={() => (
+                  <Home
+                    accounts={accounts}
+                    trades={trades}
+                    transactions={transactions}
+                  />
+                )}
               />
               <Route
                 path="/accounts"

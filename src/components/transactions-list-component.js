@@ -44,14 +44,14 @@ const TransactionsList = (props) => {
       { accessor: "type", Header: "Type" },
       { accessor: "action", Header: "Action" },
       { accessor: "quantity", Header: "Quantity" },
-      { accessor: "underlyingsymbol", Header: "Symbol" },
       {
-        accessor: "expiration",
-        Header: "Expiration",
+        accessor: "symbol",
+        Header: "Symbol",
         Cell: ({ value }) => {
-          return format(new Date(value), "MM/dd/yyyy");
+          return value.match(/^\w+/g);
         },
       },
+      { accessor: "expiration", Header: "Expiration" },
       { accessor: "callput", Header: "C/P" },
       { accessor: "strikeprice", Header: "Strike" },
       { accessor: "avgprice", Header: "Avg" },
@@ -160,11 +160,15 @@ const TransactionsList = (props) => {
                           column.render("Header")
                         }
                         <span>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? "Y"
-                              : "N"
-                            : ""}
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <i class="bi bi-arrow-up"></i>
+                            ) : (
+                              <i class="bi bi-arrow-down"></i>
+                            )
+                          ) : (
+                            ""
+                          )}
                         </span>
                       </th>
                     ))

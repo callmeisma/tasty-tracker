@@ -28,7 +28,13 @@ const TradesList = (props) => {
           return value ? format(new Date(value), "MM/dd/yyyy") : "";
         },
       },
-      { accessor: "symbol", Header: "Symbol" },
+      {
+        accessor: "symbol",
+        Header: "Symbol",
+        Cell: ({ value }) => {
+          return value.match(/^\w+/g);
+        },
+      },
       { accessor: "callput", Header: "Action" },
       { accessor: "total", Header: "Total" },
       { accessor: "value", Header: "Value" },
@@ -39,7 +45,6 @@ const TradesList = (props) => {
   );
 
   const data = React.useMemo(() => props.trades);
-
   const tableInstance = useTable(
     { columns, data },
     useGlobalFilter,
@@ -133,11 +138,15 @@ const TradesList = (props) => {
                           column.render("Header")
                         }
                         <span>
-                          {column.isSorted
-                            ? column.isSortedDesc
-                              ? "Y"
-                              : "N"
-                            : ""}
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <i class="bi bi-arrow-up"></i>
+                            ) : (
+                              <i class="bi bi-arrow-down"></i>
+                            )
+                          ) : (
+                            ""
+                          )}
                         </span>
                       </th>
                     ))

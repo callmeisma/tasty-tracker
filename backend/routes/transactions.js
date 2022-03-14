@@ -8,13 +8,13 @@ router.route("/").get((req, res) => {
 });
 
 router.route("/").delete((req, res) => {
-  Transaction.deleteMany({}, function(err, result) {
+  Transaction.deleteMany({}, function (err, result) {
     if (err) {
-      res.send('whack');
+      res.send("whack");
     } else {
       res.send(result);
     }
-  })
+  });
 });
 
 router.route("/add").post((req, res) => {
@@ -25,7 +25,7 @@ router.route("/add").post((req, res) => {
   const commissions = Number(req.body.commissions);
   const date = Date.parse(req.body.date);
   const description = req.body.description;
-  const expiration = Date.parse(req.body.expiration);
+  const expiration = req.body.expiration;
   const fees = Number(req.body.fees);
   const instrument = req.body.instrument;
   const multiplier = Number(req.body.multiplier);

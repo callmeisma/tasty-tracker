@@ -6,7 +6,7 @@ const UploadTransactions = () => {
   const [accounts, setAccounts] = useState([]);
   const [csv, setCsv] = useState("");
   const [transactions, setTransactions] = useState([]);
-  const [added, setAdded] = useState("")
+  const [added, setAdded] = useState("");
 
   const csvHandler = (input) => {
     if (input.target.files && input.target.files[0]) {
@@ -45,7 +45,6 @@ const UploadTransactions = () => {
     for (var i = 1; i < lines.length; i++) {
       var obj = {};
 
-
       var fixline = rmvComma(lines[i]).replace("--", "");
 
       // Get transaction values in an array
@@ -62,7 +61,6 @@ const UploadTransactions = () => {
     return setTransactions(result);
   };
 
-
   const onSubmit = (e) => {
     e.preventDefault();
     csvJSON(csv);
@@ -76,13 +74,13 @@ const UploadTransactions = () => {
         commissions: transactions[i].commissions || "",
         date: transactions[i].date,
         description: transactions[i].description,
-        expiration: transactions[i].expirationdate || transactions[i].date,
+        expiration: transactions[i].expirationdate,
         fees: transactions[i].fees,
         instrument: transactions[i].instrumenttype || "",
         multiplier: transactions[i].multiplier || "",
         order: transactions[i].ordernumber || "",
         quantity: transactions[i].quantity,
-        rootsymbol: transactions[i].rootsymbol || "", 
+        rootsymbol: transactions[i].rootsymbol || "",
         strikeprice: transactions[i].strikeprice || "",
         symbol: transactions[i].symbol || "",
         type: transactions[i].type,
@@ -91,8 +89,7 @@ const UploadTransactions = () => {
       };
       axios
         .post("http://localhost:4000/transactions/add", transaction)
-        .then((res) => console.log(res.data), 
-        setAdded("Transactions added"))
+        .then((res) => console.log(res.data), setAdded("Transactions added"));
     }
   };
 
@@ -105,7 +102,7 @@ const UploadTransactions = () => {
   }, []);
 
   return (
-    <div>
+    <div className="p-3">
       <h3>Upload Transactions</h3>
       <form className="m-3 w-75" id="csv-form" onSubmit={(e) => onSubmit(e)}>
         <div className="input-group mb-3">
@@ -140,7 +137,12 @@ const UploadTransactions = () => {
           />
         </div>
         <div className="mb-3">
-          <button type="submit" className="btn btn-primary" form="csv-form" onClick={(e) => onSubmit(e)}>
+          <button
+            type="submit"
+            className="btn btn-primary"
+            form="csv-form"
+            onClick={(e) => onSubmit(e)}
+          >
             Submit
           </button>
         </div>
