@@ -1,51 +1,85 @@
 const TradeConverter = (transactions) => {
-  const openTrans = transactions.filter(
+  //   Filter by open transactions
+  const openTransactions = transactions.filter(
     (transaction) => transaction.action.slice(-4) === "OPEN"
   );
-  const closeTrans = transactions.filter(
+  //   Filter by open transactions
+  const closeTransactions = transactions.filter(
     (transaction) => transaction.action.slice(-5) === "CLOSE"
   );
 
-  let tradelist = [];
-  // Create trade with open data
-  for (let i = 0; i < openTrans.length; i++) {
-    let trade = {
-      openid: openTrans[i]._id,
-      account: openTrans[i].account,
-      commissions: openTrans[i].commissions,
-      expiration: openTrans[i].expiration,
-      startdate: openTrans[i].date,
-      fees: openTrans[i].fees,
-      multiplier: openTrans[i].multiplier,
-      strike: openTrans[i].strikeprice,
-      symbol: openTrans[i].symbol,
-      value: openTrans[i].value,
-      callput: openTrans[i].callput,
-      total: openTrans[i].value + openTrans[i].fees + openTrans[i].commissions,
-    };
-    tradelist.push(trade);
-  }
+  const createTrades = () => {
+    let trades = [];
+    const openTransactionsOrdersArr = Object.keys(openTransactions).map(
+      (transaction) => {
+        return openTransactions[transaction].order;
+      }
+    );
 
-  // For trades created, look for closing transaction pair and add closing data
-  for (let i = 0; i < tradelist.length; i++) {
-    for (let j = 0; j < closeTrans.length; j++) {
-      if (
-        tradelist[i].symbol === closeTrans[j].symbol &&
-        tradelist[i].strike === closeTrans[j].strikeprice &&
-        tradelist[i].expiration === closeTrans[j].expiration &&
-        tradelist[i].callput === closeTrans[j].callput
-      ) {
-        tradelist[i].closeid = closeTrans[j]._id;
-        tradelist[i].enddate = closeTrans[j].date;
-        tradelist[i].commissions += closeTrans[j].commissions;
-        tradelist[i].fees += closeTrans[j].fees;
-        tradelist[i].value += closeTrans[j].value;
-        tradelist[i].total +=
-          closeTrans[j].value + closeTrans[j].fees + closeTrans[j].commissions;
+    const openTransactionsOrders = [...new Set(openTransactionsOrdersArr)];
+
+    for (let i = 0; i < openTransactionsOrders.length; i++) {
+      let tradeStart = {
+        openOrder: openTransactionsOrders[i],
+        commissions: 0,
+        fees: 0,
+        transactions: [],
+        value: 0,
+        pairs: [],
+      };
+      trades.push(tradeStart);
+    }
+    return trades;
+  };
+
+  const placeOpenTransactions = (trades) => {
+    for (let i = 0; i < openTransactions.length; i++) {
+      for (let j = 0; j < trades.length; j++) {
+        if (openTransactions[i].order === trades[j].openOrder) {
+          trades[j].account = openTransactions[i].account;
+          trades[j].startdate = openTransactions[i].date;
+          trades[j].value += openTransactions[i].value;
+          trades[j].commissions += openTransactions[i].commissions;
+          trades[j].fees += openTransactions[i].fees;
+          trades[j].symbol = openTransactions[i].symbol.match(/^\w+/g)[0];
+          trades[j].pairs.push(openTransactions[i].symbol);
+          trades[j].transactions.push(openTransactions[i]);
+        }
+        trades[j].pairs = [...new Set(trades[j].pairs)];
       }
     }
-  }
-  return tradelist;
+    return trades;
+  };
+
+  const closeTrades = (trades) => {
+    for (let i = 0; i < closeTransactions.length; i++) {
+      for (let j = 0; j < trades.length; j++) {
+        for (let k = 0; k < trades[j].pairs.length; k++) {
+          if (
+            closeTransactions[i].symbol === trades[j].pairs[k] &&
+            closeTransactions[i].strikeprice ===
+              trades[j].transactions[k].strikeprice &&
+            closeTransactions[i].expiration ===
+              trades[j].transactions[k].expiration &&
+            closeTransactions[i].callput === trades[j].transactions[k].callput
+          ) {
+            trades[j].transactions.push(closeTransactions[i]);
+            trades[j].enddate = closeTransactions[i].date;
+            trades[j].commissions += closeTransactions[i].commissions;
+            trades[j].fees += closeTransactions[i].fees;
+            trades[j].value += closeTransactions[i].value;
+          }
+        }
+      }
+    }
+    return trades;
+  };
+
+  const newTrades = createTrades();
+  const openTrades = placeOpenTransactions(newTrades);
+  const result = closeTrades(openTrades);
+
+  return result;
 };
 
 export default TradeConverter;

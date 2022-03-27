@@ -1,11 +1,9 @@
 import React from "react";
-import uniqid from "uniqid";
 import {
   useTable,
   usePagination,
   useSortBy,
   useGlobalFilter,
-  useAsyncDebounce,
 } from "react-table";
 import { format } from "date-fns";
 import { GlobalFilter } from "./filter-global-component";
@@ -35,9 +33,7 @@ const TradesList = (props) => {
           return value.match(/^\w+/g);
         },
       },
-      { accessor: "callput", Header: "Action" },
-      { accessor: "total", Header: "Total" },
-      { accessor: "value", Header: "Value" },
+      { accessor: "value", Header: "Total" },
       { accessor: "fees", Header: "Fees" },
       { accessor: "commissions", Header: "Commissions" },
     ],
@@ -45,6 +41,7 @@ const TradesList = (props) => {
   );
 
   const data = React.useMemo(() => props.trades);
+
   const tableInstance = useTable(
     { columns, data },
     useGlobalFilter,
@@ -72,6 +69,8 @@ const TradesList = (props) => {
   const { globalFilter } = state;
 
   const { pageIndex } = state;
+
+  // console.log(props.trades);
   return (
     <div className="p-3">
       <h3>Trades ({props.trades.length})</h3>
@@ -140,9 +139,9 @@ const TradesList = (props) => {
                         <span>
                           {column.isSorted ? (
                             column.isSortedDesc ? (
-                              <i class="bi bi-arrow-up"></i>
+                              <i className="bi bi-arrow-up"></i>
                             ) : (
-                              <i class="bi bi-arrow-down"></i>
+                              <i className="bi bi-arrow-down"></i>
                             )
                           ) : (
                             ""

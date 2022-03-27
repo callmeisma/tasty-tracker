@@ -39,8 +39,8 @@ const ChartMonthly = (props) => {
         trade.enddate.substring(5, 7) === month
     );
 
-    return inTrades.reduce(function (total, currentValue) {
-      return total + currentValue.total;
+    return inTrades.reduce(function (value, currentValue) {
+      return value + currentValue.value;
     }, 0);
   };
 

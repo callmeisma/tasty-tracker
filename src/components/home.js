@@ -15,7 +15,7 @@ const Home = (props) => {
     dateRangeUpdate("year-to-date");
   }, []);
 
-  const filterTrades = (account, start, end) => {
+  const filterRealizedTrades = (account, start, end) => {
     // Filter by start and end dates selected
     const tradesInDateRange = props.trades.filter((trade) => {
       return (
@@ -35,16 +35,40 @@ const Home = (props) => {
     }
   };
 
-  const profitLoss = (account, start, end) => {
-    const trades = filterTrades(account, start, end);
-    return trades.reduce(function (accumulator, trade) {
-      return accumulator + trade.total;
+  const filterUnrealizedTrades = (account, start, end) => {
+    // Filter by start and end dates selected
+    const tradesInDateRange = props.trades.filter((trade) => {
+      return trade.startdate.substring(0, 10) >= start;
+    });
+    // Filter by account selected
+    if (account === "all") {
+      return tradesInDateRange;
+    } else {
+      const tradesInDateAcc = tradesInDateRange.filter((trade) => {
+        return trade.account === account;
+      });
+      return tradesInDateAcc;
+    }
+  };
+
+  const realizedPL = (account, start, end) => {
+    const trades = filterRealizedTrades(account, start, end);
+    const closeTrades = trades.filter((trade) => trade.enddate !== undefined);
+    return closeTrades.reduce((accumulator, trade) => {
+      return accumulator + trade.value;
+    }, 0);
+  };
+
+  const unrealizedPL = (account, start, end) => {
+    const trades = filterUnrealizedTrades(account, start, end);
+    return trades.reduce((accumulator, trade) => {
+      return (accumulator += trade.value);
     }, 0);
   };
 
   const feesOpen = (account, start, end) => {
-    const trades = filterTrades(account, start, end);
-    return trades.reduce(function (accumulator, trade) {
+    const trades = filterUnrealizedTrades(account, start, end);
+    return trades.reduce((accumulator, trade) => {
       return accumulator + trade.fees + trade.commissions;
     }, 0);
   };
@@ -81,7 +105,7 @@ const Home = (props) => {
     for (let i = 0; i < moneyMovement.length; i++) {
       investment += moneyMovement[i].value;
     }
-    return (profitLoss(accSel, start, end) / investment) * 100;
+    return (realizedPL(accSel, start, end) / investment) * 100;
   };
 
   const getFirstLastDate = (account) => {
@@ -243,16 +267,20 @@ const Home = (props) => {
           <h5>{percReturn(accSel, startDate, endDate).toFixed(2)}%</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
-          <p>P/L</p>
-          <h5>${profitLoss(accSel, startDate, endDate).toFixed(2)}</h5>
+          <p>Realized P/L</p>
+          <h5>${realizedPL(accSel, startDate, endDate).toFixed(2)}</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
-          <p>Fees</p>
+          <p>Unrealized P/L</p>
+          <h5>${unrealizedPL(accSel, startDate, endDate).toFixed(2)}</h5>
+        </div>
+        <div className="d-flex flex-column align-items-center">
+          <p>Fees/Comms</p>
           <h5>${feesOpen(accSel, startDate, endDate).toFixed(2)}</h5>
         </div>
         <div className="d-flex flex-column align-items-center">
           <p>Trades</p>
-          <h5>{filterTrades(accSel, startDate, endDate).length}</h5>
+          <h5>{filterRealizedTrades(accSel, startDate, endDate).length}</h5>
         </div>
       </div>
       <ChartMonthly trades={props.trades} account={accSel} />
