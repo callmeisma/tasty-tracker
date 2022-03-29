@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import ChartMonthly from "./chart-monthly-component";
-// import ChartMonthlyAvg from "./chart-monthly-avg-component";
+import ChartMonthlyAvg from "./chart-monthly-avg-component";
 // import ChartTopSymbols from "./chart-top-symbols-component";
 // import ChartReturns from "./chart-returns-component";
 
@@ -261,7 +261,7 @@ const Home = (props) => {
         </div>
       </form>
       {/* Overall Info */}
-      <div className="d-flex justify-content-evenly shadow p-3 mb-5 bg-body rounded">
+      <div className="d-flex justify-content-evenly shadow p-2 my-3 bg-body rounded">
         <div className="d-flex flex-column align-items-center">
           <p>Return</p>
           <h5>{percReturn(accSel, startDate, endDate).toFixed(2)}%</h5>
@@ -283,8 +283,13 @@ const Home = (props) => {
           <h5>{filterRealizedTrades(accSel, startDate, endDate).length}</h5>
         </div>
       </div>
+      <ChartMonthlyAvg
+        trades={props.trades}
+        account={accSel}
+        start={startDate}
+        end={endDate}
+      />
       <ChartMonthly trades={props.trades} account={accSel} />
-      {/* <ChartMonthlyAvg years={years} /> */}
       {/* <ChartReturns
         account={account}
         trades={props.trades}

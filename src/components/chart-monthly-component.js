@@ -53,7 +53,7 @@ const ChartMonthly = (props) => {
   }, [trades]);
 
   return (
-    <div className="table-responsive shadow p-3 mb-5 bg-body rounded">
+    <div className="table-responsive shadow p-2 my-3 bg-body rounded">
       <p className="text-muted">
         <small>Realized Monthly Return Charts</small>
       </p>

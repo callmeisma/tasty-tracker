@@ -3,7 +3,7 @@ import axios from "axios";
 
 const CreateAccount = () => {
   const [accountName, setAccountName] = useState("");
-  const [startingBalance, setStartingBalance] = useState(1);
+  const [startingBalance, setStartingBalance] = useState(0);
 
   const onSubmit = (e) => {
     e.preventDefault();

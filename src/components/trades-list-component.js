@@ -70,47 +70,72 @@ const TradesList = (props) => {
 
   const { pageIndex } = state;
 
-  // console.log(props.trades);
+  console.log(props.trades);
   return (
     <div className="p-3">
-      <h3>Trades ({props.trades.length})</h3>
-      <div>
+      <div className="d-flex justify-content-between align-items-center pb-3">
+        <h3 className="my-auto">Trades ({props.trades.length})</h3>
         <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
       </div>
-      <nav>
-        <span>
-          Page{" "}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>
-        </span>
-        <span>
-          | Go to page:{" "}
-          <input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={(e) => {
-              const pageNumber = e.target.value
-                ? Number(e.target.value) - 1
-                : 0;
-              gotoPage(pageNumber);
-            }}
-            style={{ width: "50px" }}
-          />
-        </span>
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {"<<"}
-        </button>
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          Previous
-        </button>
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          Next
-        </button>
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {">>"}
-        </button>
-      </nav>
+      <div className="d-flex justify-content-end">
+        <div className="d-flex align-items-center py-2">
+          <p className="m-auto">
+            Page{" "}
+            <strong>
+              {pageIndex + 1} of {pageOptions.length}
+            </strong>
+          </p>
+          <p className="m-auto">
+            | Go to page:{" "}
+            <input
+              type="number"
+              defaultValue={pageIndex + 1}
+              onChange={(e) => {
+                const pageNumber = e.target.value
+                  ? Number(e.target.value) - 1
+                  : 0;
+                gotoPage(pageNumber);
+              }}
+              className="p-1 text-center"
+              style={{ width: "50px" }}
+            />
+          </p>
+          <div className="btn-group m-auto px-3">
+            <button
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+              type="button"
+              className="btn btn-outline-secondary"
+            >
+              <i className="bi bi-skip-backward-fill"></i>
+            </button>
+            <button
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+              type="button"
+              className="btn btn-outline-secondary"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+              type="button"
+              className="btn btn-outline-secondary"
+            >
+              Next
+            </button>
+            <button
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+              type="button"
+              className="btn btn-outline-secondary"
+            >
+              <i className="bi bi-skip-forward-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
       <div className="table-responsive">
         <table
           {...getTableProps()}

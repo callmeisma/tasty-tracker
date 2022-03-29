@@ -1,3 +1,5 @@
+import uniqid from "uniqid";
+
 const TradeConverter = (transactions) => {
   //   Filter by open transactions
   const openTransactions = transactions.filter(
@@ -20,6 +22,7 @@ const TradeConverter = (transactions) => {
 
     for (let i = 0; i < openTransactionsOrders.length; i++) {
       let tradeStart = {
+        id: uniqid(),
         openOrder: openTransactionsOrders[i],
         commissions: 0,
         fees: 0,

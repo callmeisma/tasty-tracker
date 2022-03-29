@@ -69,7 +69,9 @@ const AccountsList = (props) => {
 
   return (
     <div className="p-3">
-      <h3>Accounts</h3>
+      <div className="d-flex justify-content-between align-items-center pb-3">
+        <h3 className="my-auto">Accounts ({props.accounts.length})</h3>
+      </div>
       <table className="table">
         <thead className="thead-light">
           <tr>
@@ -95,16 +97,21 @@ const AccountsList = (props) => {
                 </td>
                 <td key={uniqid()}>${getProfitloss(account.account)}</td>
                 <td key={account.account + "action"}>
-                  <button>
-                    <Link to={"/edit-account/" + account._id}>edit</Link>
-                  </button>
-                  <button
-                    onClick={() => {
-                      deleteAccount(account._id);
-                    }}
-                  >
-                    delete
-                  </button>
+                  <div className="btn-group">
+                    <button className="btn btn-primary">
+                      <Link to={"/edit-account/" + account._id}>
+                        <i className="bi bi-pen text-light"></i>
+                      </Link>
+                    </button>
+                    <button
+                      onClick={() => {
+                        deleteAccount(account._id);
+                      }}
+                      className="btn btn-outline-danger"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
             );
