@@ -109,7 +109,7 @@ const AccountsList = (props) => {
                       }}
                       className="btn btn-outline-danger"
                     >
-                      <i class="bi bi-trash"></i>
+                      <i className="bi bi-trash"></i>
                     </button>
                   </div>
                 </td>

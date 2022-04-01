@@ -1,7 +1,7 @@
 import uniqid from "uniqid";
 
 const TradeConverter = (transactions) => {
-  //   Filter by open transactions
+  // Filter by open transactions
   const openTransactions = transactions.filter(
     (transaction) => transaction.action.slice(-4) === "OPEN"
   );
@@ -9,7 +9,6 @@ const TradeConverter = (transactions) => {
   const closeTransactions = transactions.filter(
     (transaction) => transaction.action.slice(-5) === "CLOSE"
   );
-
   const createTrades = () => {
     let trades = [];
     const openTransactionsOrdersArr = Object.keys(openTransactions).map(
@@ -17,9 +16,7 @@ const TradeConverter = (transactions) => {
         return openTransactions[transaction].order;
       }
     );
-
     const openTransactionsOrders = [...new Set(openTransactionsOrdersArr)];
-
     for (let i = 0; i < openTransactionsOrders.length; i++) {
       let tradeStart = {
         id: uniqid(),
@@ -34,7 +31,6 @@ const TradeConverter = (transactions) => {
     }
     return trades;
   };
-
   const placeOpenTransactions = (trades) => {
     for (let i = 0; i < openTransactions.length; i++) {
       for (let j = 0; j < trades.length; j++) {
@@ -53,7 +49,6 @@ const TradeConverter = (transactions) => {
     }
     return trades;
   };
-
   const closeTrades = (trades) => {
     for (let i = 0; i < closeTransactions.length; i++) {
       for (let j = 0; j < trades.length; j++) {
@@ -77,7 +72,6 @@ const TradeConverter = (transactions) => {
     }
     return trades;
   };
-
   const newTrades = createTrades();
   const openTrades = placeOpenTransactions(newTrades);
   const result = closeTrades(openTrades);

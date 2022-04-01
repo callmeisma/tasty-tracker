@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const UploadTransactions = () => {
+const UploadTransactions = (props) => {
   const [account, setAccount] = useState("");
   const [accounts, setAccounts] = useState([]);
   const [csv, setCsv] = useState("");
-  const [transactions, setTransactions] = useState([]);
+  const [row, setRow] = useState([]);
   const [added, setAdded] = useState("");
 
   const csvHandler = (input) => {
@@ -58,39 +58,48 @@ const UploadTransactions = () => {
       result.push(obj);
     }
 
-    return setTransactions(result);
+    return setRow(result);
   };
 
   const onSubmit = (e) => {
     e.preventDefault();
     csvJSON(csv);
 
-    for (let i = 0; i < transactions.length; i++) {
+    for (let i = 0; i < row.length; i++) {
       let transaction = {
         account: account,
-        action: transactions[i].action || "",
-        avgprice: transactions[i].averageprice || "",
-        callput: transactions[i].callorput || "",
-        commissions: transactions[i].commissions || "",
-        date: transactions[i].date,
-        description: transactions[i].description,
-        expiration: transactions[i].expirationdate,
-        fees: transactions[i].fees,
-        instrument: transactions[i].instrumenttype || "",
-        multiplier: transactions[i].multiplier || "",
-        order: transactions[i].ordernumber || "",
-        quantity: transactions[i].quantity,
-        rootsymbol: transactions[i].rootsymbol || "",
-        strikeprice: transactions[i].strikeprice || "",
-        symbol: transactions[i].symbol || "",
-        type: transactions[i].type,
-        underlyingsymbol: transactions[i].underlyingsymbol || "",
-        value: transactions[i].value,
+        action: row[i].action || "",
+        avgprice: row[i].averageprice || "",
+        callput: row[i].callorput || "",
+        commissions: row[i].commissions || "",
+        date: row[i].date,
+        description: row[i].description,
+        expiration: row[i].expirationdate,
+        fees: row[i].fees,
+        instrument: row[i].instrumenttype || "",
+        multiplier: row[i].multiplier || "",
+        order: row[i].ordernumber || "",
+        quantity: row[i].quantity,
+        rootsymbol: row[i].rootsymbol || "",
+        strikeprice: row[i].strikeprice || "",
+        symbol: row[i].symbol || "",
+        type: row[i].type,
+        underlyingsymbol: row[i].underlyingsymbol || "",
+        value: row[i].value,
       };
       axios
         .post("http://localhost:4000/transactions/add", transaction)
         .then((res) => console.log(res.data), setAdded("Transactions added"));
     }
+
+    axios
+      .get("http://localhost:4000/transactions/")
+      .then((response) => {
+        props.setTransactions(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   useEffect(() => {

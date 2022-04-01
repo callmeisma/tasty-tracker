@@ -42,7 +42,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    setTrades(TradeConverter(transactions));
+    if (transactions !== undefined) {
+      setTrades(TradeConverter(transactions));
+    }
   }, [transactions]);
 
   return (
@@ -105,7 +107,12 @@ function App() {
               <Route
                 path="/upload-transactions"
                 exact
-                component={UploadTransactions}
+                render={() => (
+                  <UploadTransactions
+                    transactions={transactions}
+                    setTransactions={setTransactions}
+                  />
+                )}
               />
             </main>
           </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import ChartMonthly from "./chart-monthly-component";
-import ChartMonthlyAvg from "./chart-monthly-avg-component";
+import TradeDetails from "./widget-trade-details";
+import AccountDetails from "./widget-account-details";
 // import ChartTopSymbols from "./chart-top-symbols-component";
 // import ChartReturns from "./chart-returns-component";
 
@@ -14,99 +15,6 @@ const Home = (props) => {
   useEffect(() => {
     dateRangeUpdate("year-to-date");
   }, []);
-
-  const filterRealizedTrades = (account, start, end) => {
-    // Filter by start and end dates selected
-    const tradesInDateRange = props.trades.filter((trade) => {
-      return (
-        trade.startdate.substring(0, 10) >= start &&
-        trade.enddate !== undefined &&
-        trade.enddate.substring(0, 10) <= end
-      );
-    });
-    // Filter by account selected
-    if (account === "all") {
-      return tradesInDateRange;
-    } else {
-      const tradesInDateAcc = tradesInDateRange.filter((trade) => {
-        return trade.account === account;
-      });
-      return tradesInDateAcc;
-    }
-  };
-
-  const filterUnrealizedTrades = (account, start, end) => {
-    // Filter by start and end dates selected
-    const tradesInDateRange = props.trades.filter((trade) => {
-      return trade.startdate.substring(0, 10) >= start;
-    });
-    // Filter by account selected
-    if (account === "all") {
-      return tradesInDateRange;
-    } else {
-      const tradesInDateAcc = tradesInDateRange.filter((trade) => {
-        return trade.account === account;
-      });
-      return tradesInDateAcc;
-    }
-  };
-
-  const realizedPL = (account, start, end) => {
-    const trades = filterRealizedTrades(account, start, end);
-    const closeTrades = trades.filter((trade) => trade.enddate !== undefined);
-    return closeTrades.reduce((accumulator, trade) => {
-      return accumulator + trade.value;
-    }, 0);
-  };
-
-  const unrealizedPL = (account, start, end) => {
-    const trades = filterUnrealizedTrades(account, start, end);
-    return trades.reduce((accumulator, trade) => {
-      return (accumulator += trade.value);
-    }, 0);
-  };
-
-  const feesOpen = (account, start, end) => {
-    const trades = filterUnrealizedTrades(account, start, end);
-    return trades.reduce((accumulator, trade) => {
-      return accumulator + trade.fees + trade.commissions;
-    }, 0);
-  };
-
-  const percReturn = (account, start, end) => {
-    // Get account money movements
-    let moneyMovement = [];
-    if (account === "all") {
-      moneyMovement = props.transactions.filter(
-        (transaction) => transaction.type === "Money Movement"
-      );
-    } else {
-      moneyMovement = props.transactions.filter(
-        (transaction) =>
-          transaction.account === account &&
-          transaction.type === "Money Movement"
-      );
-    }
-
-    // Get money invested
-    let investment = 0;
-    // Get starting balances
-    if (account === "all") {
-      for (let i = 0; i < props.accounts.length; i++) {
-        investment += props.accounts[i].startingBalance;
-      }
-    } else {
-      for (let i = 0; i < props.accounts.length; i++) {
-        if (props.accounts[i] === account)
-          investment += props.accounts[i].startingBalance;
-      }
-    }
-    // Get money invested
-    for (let i = 0; i < moneyMovement.length; i++) {
-      investment += moneyMovement[i].value;
-    }
-    return (realizedPL(accSel, start, end) / investment) * 100;
-  };
 
   const getFirstLastDate = (account) => {
     const dates = [];
@@ -260,34 +168,19 @@ const Home = (props) => {
           />
         </div>
       </form>
-      {/* Overall Info */}
-      <div className="d-flex justify-content-evenly shadow p-2 my-3 bg-body rounded">
-        <div className="d-flex flex-column align-items-center">
-          <p>Return</p>
-          <h5>{percReturn(accSel, startDate, endDate).toFixed(2)}%</h5>
-        </div>
-        <div className="d-flex flex-column align-items-center">
-          <p>Realized P/L</p>
-          <h5>${realizedPL(accSel, startDate, endDate).toFixed(2)}</h5>
-        </div>
-        <div className="d-flex flex-column align-items-center">
-          <p>Unrealized P/L</p>
-          <h5>${unrealizedPL(accSel, startDate, endDate).toFixed(2)}</h5>
-        </div>
-        <div className="d-flex flex-column align-items-center">
-          <p>Fees/Comms</p>
-          <h5>${feesOpen(accSel, startDate, endDate).toFixed(2)}</h5>
-        </div>
-        <div className="d-flex flex-column align-items-center">
-          <p>Trades</p>
-          <h5>{filterRealizedTrades(accSel, startDate, endDate).length}</h5>
-        </div>
-      </div>
-      <ChartMonthlyAvg
+      <AccountDetails
+        account={accSel}
+        startDate={startDate}
+        endDate={endDate}
+        accounts={props.accounts}
+        trades={props.trades}
+        transactions={props.transactions}
+      />
+      <TradeDetails
         trades={props.trades}
         account={accSel}
-        start={startDate}
-        end={endDate}
+        startDate={startDate}
+        endDate={endDate}
       />
       <ChartMonthly trades={props.trades} account={accSel} />
       {/* <ChartReturns

@@ -8,7 +8,6 @@ import {
   useSortBy,
   useGlobalFilter,
   useRowSelect,
-  useAsyncDebounce,
 } from "react-table";
 import { format } from "date-fns";
 import { GlobalFilter } from "./filter-global-component";
