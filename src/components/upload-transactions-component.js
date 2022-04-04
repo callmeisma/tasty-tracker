@@ -6,7 +6,6 @@ const UploadTransactions = (props) => {
   const [accounts, setAccounts] = useState([]);
   const [csv, setCsv] = useState("");
   const [row, setRow] = useState([]);
-  const [added, setAdded] = useState("");
 
   const csvHandler = (input) => {
     if (input.target.files && input.target.files[0]) {
@@ -89,7 +88,7 @@ const UploadTransactions = (props) => {
       };
       axios
         .post("http://localhost:4000/transactions/add", transaction)
-        .then((res) => console.log(res.data), setAdded("Transactions added"));
+        .then((res) => console.log(res.data));
     }
 
     axios
@@ -143,20 +142,25 @@ const UploadTransactions = (props) => {
             type="file"
             id="formFile"
             onChange={(e) => csvHandler(e)}
+            required
           />
         </div>
-        <div className="mb-3">
-          <button
-            type="submit"
-            className="btn btn-primary"
-            form="csv-form"
-            onClick={(e) => onSubmit(e)}
-          >
-            Submit
-          </button>
-        </div>
+        <button type="submit" className="btn btn-primary" form="csv-form">
+          Submit
+        </button>
       </form>
-      <p>{added}</p>
+      <div className="progress w-50 m-3">
+        <div
+          className="progress-bar"
+          role="progressbar"
+          style={{ width: "25%" }}
+          aria-valuenow="25"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          25%
+        </div>
+      </div>
     </div>
   );
 };

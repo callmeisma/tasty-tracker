@@ -29,7 +29,7 @@ const ChartMonthly = (props) => {
   };
 
   const realizedTrades = () => {
-    return props.trades.filter((trade) => trade.enddate !== undefined);
+    return trades.filter((trade) => trade.enddate !== undefined);
   };
 
   const getMonthlyReturns = (year, month) => {
