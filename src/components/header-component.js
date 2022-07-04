@@ -1,12 +1,52 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import { Link } from "react-router-dom";
 
 const Header = (props) => {
-    return (
-      <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-2 shadow">
-        <Link to="/" className="navbar-brand col-md-3 col-lg-2 me-0 px-3">
-          TastyTracker
+  const userStatus = () => {
+    if (props.user === undefined) {
+      return (
+        <div className="d-flex">
+          <Link
+            to="/sign-up"
+            className="nav-link text-white px-3 py-0 header-link"
+          >
+            Sign Up
+          </Link>
+          <Link
+            to="/sign-in"
+            className="nav-link text-white px-3 py-0 header-link"
+          >
+            Sign In
+          </Link>
+        </div>
+      );
+    } else {
+      return (
+        <div className="navbar-nav ">
+          <div className="nav-item text-nowrap d-flex">
+            <Link
+              to="/profile"
+              className="nav-link text-white px-3 py-0 header-link"
+            >
+              {props.user}
+            </Link>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  return (
+    <nav className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-2 shadow">
+      <div className="container-fluid">
+        <Link
+          to="/"
+          className="navbar-brand col-md-3 col-lg-2 d-flex align-items-center py-0 justify-content-center"
+        >
+          <i className="bi bi-piggy-bank text-white px-3 m-0 fs-4"></i>
+          <h1 className="fs-4 m-0">
+            Tasty<span className="text-danger">Tracker</span>
+          </h1>
         </Link>
         <div className="d-flex">
           <button
@@ -20,15 +60,10 @@ const Header = (props) => {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="navbar-nav">
-            <div className="nav-item text-nowrap">
-              <a className="nav-link px-3" href="#">
-                Sign out
-              </a>
-            </div>
-          </div>
+          {userStatus()}
         </div>
-      </header>
-    );
-  }
-export default Header
+      </div>
+    </nav>
+  );
+};
+export default Header;

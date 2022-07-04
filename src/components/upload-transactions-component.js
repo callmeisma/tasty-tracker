@@ -189,6 +189,7 @@ const UploadTransactions = (props) => {
     if (progress === 100) {
       setTimeout(() => {
         document.getElementById("progress").style.display = "none";
+        window.location = "/transactions";
       }, 1000);
     }
   }, [progress]);

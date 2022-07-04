@@ -21,3 +21,7 @@ html {
   -webkit-locale: "en";
   display: block;
 }
+
+.header-link:hover {
+  color: #dc3545 !important;
+}

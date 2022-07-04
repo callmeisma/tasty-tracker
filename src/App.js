@@ -3,6 +3,13 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import axios from "axios";
 
+import Header from "./components/header-component";
+import Welcome from "./components/welcome";
+import SignUp from "./components/sign-up-component";
+import SignIn from "./components/sign-in";
+
+import TradeConverter from "./components/trade-converter-component";
+import Profile from "./components/profile";
 import Home from "./components/home";
 import Navbar from "./components/navbar-component";
 import AccountsList from "./components/account-list-component";
@@ -11,15 +18,14 @@ import EditAccount from "./components/edit-account-component";
 import EditTransaction from "./components/edit-transaction-component";
 import CreateTransaction from "./components/create-transaction-component";
 import CreateAccount from "./components/create-account-component";
-import Header from "./components/header-component";
 import UploadTransactions from "./components/upload-transactions-component";
 import TradesList from "./components/trades-list-component";
-import TradeConverter from "./components/trade-converter-component";
 
 function App() {
   const [accounts, setAccounts] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [trades, setTrades] = useState([]);
+  const [user, setUser] = useState("test");
 
   useEffect(() => {
     axios
@@ -47,14 +53,18 @@ function App() {
     }
   }, [transactions]);
 
-  return (
-    <Router>
-      <div className="App">
-        <Header />
+  const viewMode = () => {
+    if (user) {
+      return (
         <div className="container-fluid">
           <div className="row">
             <Navbar />
             <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+              <Route
+                path="/profile"
+                exact
+                render={() => <Profile user={user} />}
+              />
               <Route
                 path="/"
                 exact
@@ -117,6 +127,23 @@ function App() {
             </main>
           </div>
         </div>
+      );
+    } else {
+      return (
+        <div className="flex-fill justify-contents-center align-items-center bg-light bg-gradient text-dark">
+          <Route path="/" exact component={Welcome} />
+          <Route path="/sign-up" exact component={SignUp} />
+          <Route path="/sign-in" exact component={SignIn} />
+        </div>
+      );
+    }
+  };
+
+  return (
+    <Router>
+      <div className="App d-flex flex-column">
+        <Header user={user} />
+        {viewMode()}
       </div>
     </Router>
   );
