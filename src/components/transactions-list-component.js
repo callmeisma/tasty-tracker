@@ -110,7 +110,7 @@ const TransactionsList = (props) => {
   const { pageIndex } = state;
 
   return (
-    <div className="p-3 w-100">
+    <div className="p-3 mw-100 overflow-hidden">
       <div className="d-flex justify-content-between align-items-center pb-3">
         <h3 className="my-auto">Transactions ({props.transactions.length})</h3>
         <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />

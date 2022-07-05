@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 
 const Header = (props) => {
   const userStatus = () => {
+    // WELCOME
     if (props.user === undefined) {
       return (
-        <div className="d-flex">
+        <div className="d-flex justify-content-center align-items-center">
           <Link
             to="/sign-up"
             className="nav-link text-white px-3 py-0 header-link"
@@ -18,18 +19,35 @@ const Header = (props) => {
           >
             Sign In
           </Link>
+          <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {props.setUser('userA')}}
+            >
+              Switch User
+          </button>
         </div>
       );
     } else {
+      // USER HOME
       return (
-        <div className="navbar-nav ">
-          <div className="nav-item text-nowrap d-flex">
+        <div className="d-flex justify-content-center align-items-center">
+          <div className="d-flex">
             <Link
               to="/profile"
               className="nav-link text-white px-3 py-0 header-link"
             >
               {props.user}
             </Link>
+          </div>
+          <div className="d-flex">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {props.setUser()}}
+            >
+              Switch User
+            </button>
           </div>
         </div>
       );

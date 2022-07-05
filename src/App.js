@@ -21,11 +21,13 @@ import CreateAccount from "./components/create-account-component";
 import UploadTransactions from "./components/upload-transactions-component";
 import TradesList from "./components/trades-list-component";
 
+import SampleData from "./components/sample-data"
+
 function App() {
-  const [accounts, setAccounts] = useState([]);
-  const [transactions, setTransactions] = useState([]);
+  const [accounts, setAccounts] = useState([SampleData.account]);
+  const [transactions, setTransactions] = useState(SampleData.transactions);
   const [trades, setTrades] = useState([]);
-  const [user, setUser] = useState("test");
+  const [user, setUser] = useState("userA");
 
   useEffect(() => {
     axios
@@ -56,10 +58,10 @@ function App() {
   const viewMode = () => {
     if (user) {
       return (
-        <div className="d-flex flex-column vh-100">
+        <div className="d-flex flex-column min-vh-100">
           <div className="d-flex">
             <Navbar />
-            <main className="d-flex flex-grow-1 px-5 py-3">
+            <main className="d-flex w-100">
               <Route
                 path="/profile"
                 exact
@@ -126,15 +128,14 @@ function App() {
               />
             </main>
           </div>
-          <footer class="d-flex align-items-center justify-content-center mt-auto">
-              <p class="m-0 p-2">Copyright © Ismael Fernandez</p>
+          <footer className="d-flex align-items-center justify-content-center mt-auto">
+              <p className="m-0 p-2">Copyright © Ismael Fernandez</p>
               <a href="https://github.com/callmeisma/tasty-tracker" target="_blank">
-                <i class="fab fa-github" aria-hidden="true"></i>
+                <i className="fab fa-github" aria-hidden="true"></i>
               </a>
             </footer>
         </div>
       );
-      // col-md-9 ms-sm-auto col-lg-10 px-md-4
     } else {
       return (
         <div className="flex-fill justify-contents-center align-items-center bg-light bg-gradient text-dark">
@@ -150,7 +151,7 @@ function App() {
   return (
     <Router>
       <div className="App d-flex flex-column">
-        <Header user={user} />
+        <Header user={user} setUser={setUser}/>
         {viewMode()}
       </div>
     </Router>
