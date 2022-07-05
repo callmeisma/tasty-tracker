@@ -94,7 +94,7 @@ const Home = (props) => {
   };
 
   return (
-    <div className="p-3">
+    <div className="p-3 d-flex flex-column min-vh-100">
       <form>
         {/* accounts */}
         <div className="input-group mb-3">
@@ -190,6 +190,13 @@ const Home = (props) => {
         endDate={endDate}
       /> */}
       {/* <ChartTopSymbols /> */}
+
+      <footer class="d-flex align-items-center justify-content-center mt-auto">
+        <p class="m-0 p-2">Copyright © Ismael Fernandez</p>
+        <a href="https://github.com/callmeisma/tasty-tracker" target="_blank">
+          <i class="fab fa-github" aria-hidden="true"></i>
+        </a>
+      </footer>
     </div>
   );
 };
