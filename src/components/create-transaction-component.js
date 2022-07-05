@@ -208,7 +208,7 @@ export default class CreateTransaction extends Component {
 
   render() {
     return (
-      <div>
+      <div className="w-100">
         <h3>Create New Transaction Log</h3>
         <form onSubmit={this.onSubmit}>
           <div className="form-group">

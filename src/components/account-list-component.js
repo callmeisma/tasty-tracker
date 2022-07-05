@@ -68,7 +68,7 @@ const AccountsList = (props) => {
   };
 
   return (
-    <div className="p-3">
+    <div className="p-3 w-100">
       <div className="d-flex justify-content-between align-items-center pb-3">
         <h3 className="my-auto">Accounts ({props.accounts.length})</h3>
       </div>

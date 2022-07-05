@@ -72,7 +72,7 @@ const TradesList = (props) => {
 
   // console.log(props.trades);
   return (
-    <div className="p-3">
+    <div className="p-3 w-100">
       <div className="d-flex justify-content-between align-items-center pb-3">
         <h3 className="my-auto">Trades ({props.trades.length})</h3>
         <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />

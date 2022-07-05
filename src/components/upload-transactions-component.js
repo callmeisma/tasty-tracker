@@ -195,7 +195,7 @@ const UploadTransactions = (props) => {
   }, [progress]);
 
   return (
-    <div className="p-3">
+    <div className="p-3 w-100">
       <h3>Upload Transactions</h3>
       <form className="m-3 w-75" id="csv-form" onSubmit={(e) => onSubmit(e)}>
         <div className="input-group mb-3">

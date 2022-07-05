@@ -59,7 +59,7 @@ function App() {
         <div className="d-flex flex-column vh-100">
           <div className="d-flex">
             <Navbar />
-            <main className="d-flex flex-grow-1">
+            <main className="d-flex flex-grow-1 px-5 py-3">
               <Route
                 path="/profile"
                 exact

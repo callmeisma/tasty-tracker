@@ -21,7 +21,7 @@ const CreateAccount = () => {
   };
 
   return (
-    <div className="shadow p-3 mb-5 bg-body rounded p-3">
+    <div className="shadow p-3 mb-5 bg-body rounded p-3 w-100">
       <h3>Create New Account</h3>
       <form className="m-3 w-75" onSubmit={(e) => onSubmit(e)}>
         <div className="input-group mb-3">
