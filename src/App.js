@@ -56,10 +56,10 @@ function App() {
   const viewMode = () => {
     if (user) {
       return (
-        <div className="container-fluid">
-          <div className="row">
+        <div className="d-flex flex-column vh-100">
+          <div className="d-flex">
             <Navbar />
-            <main className="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <main className="d-flex flex-grow-1">
               <Route
                 path="/profile"
                 exact
@@ -126,8 +126,15 @@ function App() {
               />
             </main>
           </div>
+          <footer class="d-flex align-items-center justify-content-center mt-auto">
+              <p class="m-0 p-2">Copyright © Ismael Fernandez</p>
+              <a href="https://github.com/callmeisma/tasty-tracker" target="_blank">
+                <i class="fab fa-github" aria-hidden="true"></i>
+              </a>
+            </footer>
         </div>
       );
+      // col-md-9 ms-sm-auto col-lg-10 px-md-4
     } else {
       return (
         <div className="flex-fill justify-contents-center align-items-center bg-light bg-gradient text-dark">

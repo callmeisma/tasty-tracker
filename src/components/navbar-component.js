@@ -5,7 +5,7 @@ const Navbar = (props) => {
   return (
     <nav
       id="sidebarMenu"
-      className="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
+      className="bg-light ps-4 pe-3"
     >
       <div className="position-sticky pt-3">
         <div className="m-auto d-flex justify-content-end">
