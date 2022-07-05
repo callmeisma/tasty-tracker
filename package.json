@@ -2,7 +2,7 @@
   "name": "tasty-tracker",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://callmeisma.github.io/tasty-tracker/",
+  "homepage": ".",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^11.1.0",
