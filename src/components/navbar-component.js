@@ -7,33 +7,33 @@ const Navbar = (props) => {
       id="sidebarMenu"
       className="bg-light d-flex flex-col align-items-start px-auto"
     >
-      <div className="position-sticky pt-3">
+      <div className="position-sticky pt-3 px-2">
         <div className="m-auto d-flex justify-content-end">
           <i className="bi bi-arrow-left-square-fill"></i>
         </div>
         <ul className="nav flex-column">
           <li className="nav-item">
-            <Link className="nav-link active" aria-current="page" to="/">
+            <Link className="nav-link active d-flex justify-content-center align-items-center" aria-current="page" to="/">
               <i className="bi bi-house p-2"></i>
-              Dashboard
+              <p className="p-0 m-auto">Dashboard</p>
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/trades">
+            <Link className="nav-link d-flex justify-content-center align-items-center" to="/trades">
               <i className="bi bi-boxes p-2"></i>
-              Trades
+              <p className="p-0 m-auto">Trades</p>
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/transactions">
+            <Link className="nav-link d-flex justify-content-center align-items-center" to="/transactions">
               <i className="bi bi-arrow-left-right p-2"></i>
-              Transactions
+              <p className="p-0 m-auto">Transactions</p>
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/accounts">
+            <Link className="nav-link d-flex justify-content-center align-items-center" to="/accounts">
               <i className="bi bi-bank p-2"></i>
-              Accounts
+              <p className="p-0 m-auto">Accounts</p>
             </Link>
           </li>
         </ul>
@@ -42,25 +42,25 @@ const Navbar = (props) => {
         </h6>
         <ul className="nav flex-column mb-2">
           <li className="nav-item">
-            <Link className="nav-link" to="/upload-transactions">
+            <Link className="nav-link d-flex justify-content-center align-items-center" to="/upload-transactions">
               <i className="bi bi-upload p-2"></i>
-              Upload CSV
+              <p className="p-0 m-auto">Upload CSV</p>
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/create-transaction">
+            <Link className="nav-link d-flex justify-content-center align-items-center" to="/create-transaction">
               <i className="bi bi-plus-circle p-2"></i>
-              Transaction
+              <p className="p-0 m-auto">Transaction</p>
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/create-account">
+            <Link className="nav-link d-flex justify-content-center align-items-center" to="/create-account">
               <i
                 className="bi bi-plus-circle p-2"
                 data-toggle="collapse"
                 data-target=".navbar-collapse"
               ></i>
-              Account
+              <p className="p-0 m-auto">Account</p>
             </Link>
           </li>
         </ul>
