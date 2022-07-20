@@ -126,8 +126,19 @@ function App() {
                   />
                 )}
               />
-              {/* Redirect GH Pages load url to home */}
-              <Route path="/tasty-tracker" exact component={Home} />
+
+              {/* Github pages */}
+              <Route
+                path="/tasty-tracker"
+                exact
+                render={() => (
+                  <Home
+                    accounts={accounts}
+                    trades={trades}
+                    transactions={transactions}
+                  />
+                )}
+              />
             </main>
           </div>
           <footer className="d-flex align-items-center justify-content-center mt-auto">
