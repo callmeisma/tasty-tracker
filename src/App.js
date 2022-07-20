@@ -126,11 +126,13 @@ function App() {
                   />
                 )}
               />
+              {/* Redirect GH Pages load url to home */}
+              <Route path="/tasty-tracker" exact component={Home} />
             </main>
           </div>
           <footer className="d-flex align-items-center justify-content-center mt-auto">
               <p className="m-0 p-2">Copyright © Ismael Fernandez</p>
-              <a href="https://github.com/callmeisma/tasty-tracker" target="_blank">
+              <a href="https://github.com/callmeisma/tasty-tracker" target="_blank" rel="noreferrer">
                 <i className="fab fa-github" aria-hidden="true"></i>
               </a>
             </footer>
